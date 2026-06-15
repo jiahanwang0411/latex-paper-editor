@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solar Energy Paper - Live Editor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Times New Roman','Georgia',serif; background: #f1f5f9; height: 100vh; overflow: hidden; }
+
+  .root { display: flex; height: 100vh; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 540px; min-width: 500px; max-width: 600px; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+  .sidebar-header { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; flex-shrink: 0; }
+  .sidebar-header .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .sidebar-header .title { font-size: 14px; font-weight: 700; color: #1e293b; font-family: 'Times New Roman',serif; }
+  .sidebar-header .badge { font-size: 9px; background: #dbeafe; color: #2563eb; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+  .save-indicator { font-size: 10px; color: #94a3b8; display: flex; align-items: center; gap: 5px; margin-bottom: 6px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+  .toolbar { display: flex; gap: 4px; margin-bottom: 8px; }
+  .toolbar .btn { font-size: 11px; padding: 3px 9px; }
+  .tabs { display: flex; gap: 3px; }
+  .tab-btn { flex: 1; padding: 6px 0; border-radius: 5px; border: none; cursor: pointer; font-size: 11px; font-weight: 400; background: #f1f5f9; color: #64748b; transition: all .12s; }
+  .tab-btn.active { font-weight: 600; background: #2563eb; color: #fff; }
+  .sidebar-body { flex: 1; overflow-y: auto; padding: 0 16px 20px; }
+
+  /* ── Preview ── */
+  .preview-area { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; align-items: center; background: #d5d9e0; }
+  .page-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; padding-bottom: 40px; }
+  .page {
+    width: 700px; height: 994px; min-height: 994px; background: #fff;
+    box-shadow: 0 1px 6px rgba(0,0,0,.1), 0 4px 20px rgba(0,0,0,.06);
+    padding: 48px 48px 48px; position: relative; overflow: hidden;
+    font-family: 'Times New Roman','CMU Serif','Georgia',serif; font-size: 14px; color: #1a1a1a; line-height: 1.7;
+  }
+  .page.page-overflow { height: auto; overflow: visible; }
+  .page-content { position: relative; height: 898px; overflow: hidden; }
+  .page-overflow .page-content { height: auto; overflow: visible; }
+  .page-block { display: flow-root; }
+  .page-clip-line {
+    position: absolute; left: 0; right: 0; bottom: 52px;
+    border-bottom: 1px dashed #ccc; pointer-events: none;
+  }
+  .page-num {
+    position: absolute; bottom: 16px; left: 0; right: 0; text-align: center;
+    font-size: 11px; color: #888; font-family: 'Times New Roman',serif;
+  }
+  .page-info-bar {
+    position: sticky; top: 0; z-index: 10; background: rgba(213,217,224,.95); backdrop-filter: blur(4px);
+    padding: 6px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 11px; color: #475569;
+    display: flex; align-items: center; gap: 12px; align-self: center;
+  }
+  .page-info-bar span { font-weight: 600; }
+
+  /* ── Form elements ── */
+  .fl { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .04em; margin-top: 13px; margin-bottom: 3px; font-family: 'Times New Roman',serif; }
+  .fl .hint { font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 6px; color: #94a3b8; }
+  .inp { width: 100%; padding: 6px 9px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 13px; outline: none; font-family: inherit; transition: border .12s; }
+  .inp:focus { border-color: #2563eb; }
+  .ta { width: 100%; min-height: 100px; padding: 7px 9px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 13px; font-family: 'Times New Roman','Georgia',serif; line-height: 1.65; outline: none; resize: vertical; transition: border .12s; }
+  .ta:focus { border-color: #2563eb; }
+
+  /* ── Buttons ── */
+  .btn { padding: 5px 12px; border-radius: 5px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all .1s; border: 1px solid #d1d5db; background: #fff; color: #374151; }
+  .btn:hover { background: #f8fafc; }
+  .icon-btn { padding: 3px 7px; border-radius: 4px; border: none; background: transparent; color: #94a3b8; cursor: pointer; font-size: 13px; }
+  .icon-btn:hover { color: #ef4444; }
+  .arrow-btn { font-size: 9px !important; padding: 2px 4px !important; color: #64748b !important; line-height: 1 !important; }
+  .arrow-btn:hover:not(:disabled) { color: #2563eb !important; background: #eff6ff; }
+  .arrow-btn:disabled { cursor: default !important; }
+
+  /* ── Section list ── */
+  .sec-btn { display: flex; align-items: center; justify-content: space-between; flex: 1; padding: 8px 12px; border: none; border-radius: 7px; cursor: pointer; font-size: 12.5px; font-weight: 400; background: transparent; color: #374151; text-align: left; margin-bottom: 2px; transition: all .1s; font-family: inherit; }
+  .sec-btn.active { font-weight: 600; background: #eff6ff; color: #1d4ed8; }
+  .sec-btn:hover:not(.active) { background: #f8fafc; }
+
+  /* ── Content writing toolbar ── */
+  .content-toolbar {
+    display: flex; flex-wrap: wrap; gap: 2px; padding: 5px 6px;
+    background: #f8fafc; border: 1px solid #d1d5db; border-bottom: none;
+    border-radius: 5px 5px 0 0; align-items: center;
+  }
+  .content-toolbar .tb-btn {
+    padding: 3px 7px; border: 1px solid #e2e8f0; border-radius: 3px;
+    font-size: 11px; cursor: pointer; background: #fff; color: #475569;
+    font-family: 'Times New Roman',serif; transition: all .1s; white-space: nowrap;
+    line-height: 1.4;
+  }
+  .content-toolbar .tb-btn:hover { background: #eff6ff; border-color: #93c5fd; color: #2563eb; }
+  .content-toolbar .tb-sep { width: 1px; height: 18px; background: #d1d5db; margin: 0 3px; flex-shrink: 0; }
+  .ta.with-toolbar { border-radius: 0 0 5px 5px !important; }
+  .word-count-bar {
+    font-size: 10px; color: #94a3b8; margin-top: 4px; display: flex;
+    justify-content: space-between; align-items: center;
+    font-family: 'Times New Roman',serif;
+  }
+  .sync-toggle { font-size: 10px; color: #64748b; display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
+  .cursor-highlight {
+    background: #fde68a; border-radius: 2px;
+    box-shadow: 0 0 0 1px #f59e0b;
+    transition: background .15s;
+    position: relative;
+  }
+  @keyframes cursorPulse {
+    0%,100% { background: #fde68a; }
+    50% { background: #fbbf24; }
+  }
+  .cursor-highlight { animation: cursorPulse 1.2s ease-in-out infinite; }
+
+  /* ── Subsection heading (preview) ── */
+  .page .p-subsec-title {
+    font-size: 14px; font-weight: 700; margin: 16px 0 6px;
+    font-style: normal;
+  }
+
+  /* ── Tags ── */
+  .tag { display: inline-flex; align-items: center; padding: 2px 9px; background: #f1f5f9; border-radius: 10px; font-size: 12px; color: #475569; margin-right: 4px; margin-bottom: 3px; }
+  .divider { height: 1px; background: #e2e8f0; margin: 14px 0; }
+  .author-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; }
+  .author-row .inp { flex: 1; }
+  .author-card { border: 1px solid #e2e8f0; border-radius: 7px; padding: 8px; margin-bottom: 8px; background: #fbfdff; }
+  .author-card .author-grid { display: grid; grid-template-columns: 22px minmax(150px,1fr) 64px minmax(160px,1fr) auto auto auto; gap: 5px; align-items: center; }
+  .author-card .author-flags { grid-column: 2 / span 3; display: flex; gap: 12px; align-items: center; margin-top: 2px; }
+  .author-card .author-actions { display: flex; gap: 2px; justify-content: flex-end; }
+  .corr-label { font-size: 11px; color: #64748b; white-space: nowrap; display: flex; align-items: center; gap: 2px; }
+  .kw-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; }
+  .kw-row .inp { flex: 1; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── Paper preview ── */
+  .page .p-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+  .page .p-authors { text-align: center; margin-bottom: 5px; font-size: 13.5px; }
+  .page .p-authors sup { font-size: 10px; color: #2563eb; }
+  .page .p-affil { text-align: center; font-size: 12px; color: #555; margin-bottom: 6px; line-height: 1.45; }
+  .page .p-affil sup { font-size: 10px; color: #2563eb; }
+  .page .p-corr { text-align: center; font-size: 11px; color: #888; margin-bottom: 18px; }
+  .page .p-author-note { text-align: center; font-size: 11px; color: #666; margin-bottom: 6px; }
+  .page .p-hr { border: none; border-top: 1px solid #ccc; margin: 14px 0; }
+  .page .p-sec-title { font-size: 15px; font-weight: 700; margin: 18px 0 8px; }
+  .page .p-sec-title-star { font-size: 14px; font-weight: 700; margin: 18px 0 8px; }
+  .page .p-body { font-size: 13.5px; line-height: 1.75; text-align: justify; }
+  .page .p-body p { margin: 0 0 0.55em; text-indent: 0; }
+  .page .p-body p.indent-2 { text-indent: 2em; }
+  .page .p-body p.continued { text-indent: 0; }
+  .page .p-body p.no-indent { text-indent: 0; }
+  .page .p-abstract { font-size: 12.5px; color: #333; line-height: 1.65; text-align: justify; margin-bottom: 10px; }
+  .page .p-kw { font-size: 12px; color: #475569; margin-bottom: 16px; }
+  .page .p-kw b { color: #1a1a1a; margin-right: 5px; }
+  .page .p-empty { color: #bbb; font-style: italic; font-family: 'Inter',sans-serif; font-size: 12px; }
+  .page .p-cite { color: #2563eb; }
+  .page .p-todo { color: #dc2626; font-weight: 700; }
+  .page .p-lineno { position: absolute; left: -36px; color: #bbb; font-size: 10px; font-family: monospace; user-select: none; }
+  .page .p-highlights { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 4px; padding: 10px 14px; margin-bottom: 18px; font-size: 12px; }
+  .page .p-highlights .hl-title { font-weight: 700; margin-bottom: 4px; color: #92400e; font-size: 11px; text-transform: uppercase; }
+  .page .p-highlights li { margin-left: 18px; margin-bottom: 2px; }
+  .page .p-nom-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 16px; }
+  .page .p-nom-table th { text-align: left; font-weight: 700; border-bottom: 2px solid #333; padding: 3px 0; font-size: 12px; }
+  .page .p-nom-table td { padding: 2px 0; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+  .page .p-nom-table td:first-child { font-style: italic; width: 90px; }
+  .page .p-statement { font-size: 12px; color: #555; line-height: 1.6; }
+  .page .p-statement b { color: #333; }
+  .page .equation-block {
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin: 14px 0; padding: 4px 40px 4px 0; min-height: 32px;
+  }
+  .page .equation-block .katex-display { margin: 0 !important; }
+  .page .eq-num {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    font-size: 13px; color: #333; font-family: 'Times New Roman', serif;
+  }
+  .page .eq-ref { color: #2563eb; font-weight: 600; }
+
+  /* ── Figures ── */
+  .page .figure-block {
+    margin: 16px auto; text-align: center; max-width: 100%;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .page .figure-block img {
+    max-width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 2px;
+  }
+  .page .figure-block .fig-placeholder {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; min-height: 120px; background: #f8fafc; border: 2px dashed #cbd5e1;
+    border-radius: 6px; color: #94a3b8; font-size: 12px; font-family: 'Inter',sans-serif;
+    flex-direction: column; gap: 4px;
+  }
+  .page .figure-block .fig-caption {
+    font-size: 12px; color: #333; margin-top: 8px; line-height: 1.5; text-align: justify;
+  }
+  .page .figure-block .fig-caption b { color: #1a1a1a; }
+  .page .fig-ref { color: #2563eb; font-weight: 600; }
+
+  /* ── Three-line table (preview) ── */
+  .page .table-block {
+    margin: 16px auto; max-width: 100%;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .page .table-block .tbl-caption {
+    font-size: 12px; color: #333; margin-bottom: 8px; line-height: 1.5; text-align: justify;
+  }
+  .page .table-block .tbl-caption b { color: #1a1a1a; }
+  .page .table-three-line {
+    width: auto; border-collapse: collapse; margin: 0 auto;
+    font-size: 12px; font-family: 'Times New Roman', serif;
+  }
+  .page .table-three-line thead tr:first-child th {
+    border-top: 1.5pt solid #000; border-bottom: 0.75pt solid #000;
+    padding: 6px 12px; font-weight: 700; text-align: center; white-space: nowrap;
+  }
+  .page .table-three-line tbody td {
+    padding: 3px 12px; border: none; text-align: center; vertical-align: top;
+  }
+  .page .table-three-line tbody tr:last-child td {
+    border-bottom: 1.5pt solid #000; padding-bottom: 6px;
+  }
+  .page .table-three-line .col-left { text-align: left; }
+  .page .table-block .tbl-note {
+    font-size: 10px; color: #666; margin-top: 4px; text-align: left;
+  }
+  .page .tbl-ref { color: #2563eb; font-weight: 600; }
+
+  /* ── Table editor (sidebar) ── */
+  .tbl-card {
+    border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 10px;
+    background: #fafbfc;
+  }
+  .tbl-card:hover { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .tbl-card .tbl-id { font-size: 11px; font-weight: 600; color: #2563eb; margin-bottom: 6px; }
+  .tbl-grid-wrap {
+    overflow-x: auto; margin: 8px 0; border: 1px solid #e2e8f0; border-radius: 4px;
+  }
+  .tbl-grid {
+    border-collapse: collapse; width: 100%; font-size: 11px; background: #fff;
+  }
+  .tbl-grid th {
+    background: #f1f5f9; border: 1px solid #e2e8f0; padding: 0; position: relative;
+    min-width: 80px; height: 28px;
+  }
+  .tbl-grid th input {
+    width: 100%; height: 100%; border: none; background: transparent;
+    text-align: center; font-size: 11px; font-weight: 600; padding: 2px 4px; outline: none;
+    font-family: 'JetBrains Mono','Consolas',monospace;
+  }
+  .tbl-grid th input:focus { background: #eff6ff; }
+  .tbl-grid td {
+    border: 1px solid #e2e8f0; padding: 0; min-width: 80px; height: 26px;
+  }
+  .tbl-grid td input {
+    width: 100%; height: 100%; border: none; background: transparent;
+    text-align: center; font-size: 11px; padding: 2px 4px; outline: none;
+    font-family: 'JetBrains Mono','Consolas',monospace;
+  }
+  .tbl-grid td input:focus { background: #eff6ff; }
+  .tbl-grid .row-num {
+    width: 22px; min-width: 22px; background: #f8fafc; text-align: center;
+    font-size: 9px; color: #94a3b8; font-weight: 600; padding: 0;
+  }
+
+  /* ── Figure manager (sidebar) ── */
+  .fig-card {
+    border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 8px;
+    background: #fafbfc; transition: box-shadow .12s;
+  }
+  .fig-card:hover { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .fig-card .fig-thumb {
+    width: 100%; max-height: 100px; object-fit: contain; border-radius: 4px;
+    border: 1px solid #e2e8f0; background: #fff; margin-bottom: 6px;
+  }
+  .fig-card .fig-id { font-size: 11px; font-weight: 600; color: #2563eb; margin-bottom: 4px; }
+  .fig-upload-zone {
+    border: 2px dashed #cbd5e1; border-radius: 8px; padding: 20px; text-align: center;
+    color: #94a3b8; font-size: 12px; cursor: pointer; transition: all .15s;
+    margin-bottom: 8px;
+  }
+  .fig-upload-zone:hover { border-color: #2563eb; color: #2563eb; background: #f8fafc; }
+  .hl-char-count { font-size: 10px; color: #94a3b8; text-align: right; margin-top: 1px; }
+  .hl-over { color: #dc2626; font-weight: 600; }
+
+  .syntax-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+  .syntax-table td { padding: 3px 0; border-bottom: 1px solid #f1f5f9; }
+  .syntax-table td:first-child { font-family: monospace; color: #2563eb; white-space: nowrap; padding-right: 8px; }
+  .syntax-table td:last-child { color: #64748b; }
+</style>
+</head>
+<body>
+
+<div class="root">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="top">
+        <span class="title">Solar Energy — Live Editor</span>
+        <span class="badge">elsarticle [review]</span>
+      </div>
+      <div class="save-indicator">
+        <span class="save-dot" id="save-dot"></span>
+        <span id="save-status">Ready</span>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="btn-export">Export</button>
+        <button class="btn" id="btn-import">Import</button>
+        <button class="btn" id="btn-reset" style="color:#ef4444">Reset</button>
+        <input type="file" id="file-import" accept=".json" style="display:none" />
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="meta">Meta</button>
+        <button class="tab-btn" data-tab="figures">Figures</button>
+        <button class="tab-btn" data-tab="tables">Tables</button>
+        <button class="tab-btn" data-tab="sections">Sections</button>
+        <button class="tab-btn" data-tab="back">Back</button>
+      </div>
+    </div>
+    <div class="sidebar-body">
+
+      <!-- META -->
+      <div class="panel active" id="panel-meta">
+        <div class="fl">Title</div>
+        <input class="inp" id="inp-title" />
+        <div class="fl">Authors</div>
+        <div id="authors-box"></div>
+        <button class="btn" id="btn-add-author" style="margin-top:2px;margin-bottom:6px">+ Author</button>
+        <div class="fl">Affiliations</div>
+        <div id="affil-box"></div>
+        <button class="btn" id="btn-add-affil" style="margin-top:2px;margin-bottom:6px">+ Affiliation</button>
+        <div class="fl">Abstract <span class="hint">150–250 words</span></div>
+        <textarea class="ta" id="inp-abstract" style="min-height:120px"></textarea>
+        <div id="abs-wordcount" style="font-size:10px;color:#94a3b8;margin-top:2px"></div>
+        <div class="fl">Keywords <span class="hint">4–6 recommended</span></div>
+        <div id="kw-box" style="margin-bottom:4px"></div>
+        <button class="btn" id="btn-add-kw">+ Keyword</button>
+        <div class="divider"></div>
+        <div class="fl">Nomenclature <span class="hint">Symbol | Definition</span></div>
+        <div id="nom-box"></div>
+        <button class="btn" id="btn-add-nom" style="margin-top:4px">+ Entry</button>
+      </div>
+
+      <!-- FIGURES -->
+      <div class="panel" id="panel-figures">
+        <div class="fig-upload-zone" id="fig-drop-zone">
+          <div style="font-size:20px;margin-bottom:4px">&#128206;</div>
+          Drag & drop image here, or click to select
+          <input type="file" id="fig-file-input" accept="image/*" style="display:none" />
+        </div>
+        <div id="fig-list"></div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:8px;line-height:1.5">
+          1. Upload images above<br/>
+          2. Click <b style="color:#2563eb">Insert Code</b> to copy LaTeX snippet<br/>
+          3. Paste into section content → live preview renders it<br/>
+          4. Adjust width with the slider
+        </div>
+      </div>
+
+      <!-- TABLES -->
+      <div class="panel" id="panel-tables">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;font-weight:600;color:#334155">Three-line Tables (booktabs)</span>
+          <button class="btn" id="btn-add-table" style="font-size:11px;padding:3px 10px">+ New Table</button>
+        </div>
+        <div id="tbl-list"></div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:8px;line-height:1.6">
+          1. Click <b style="color:#2563eb">+ New Table</b> to create<br/>
+          2. Edit headers and cells in the grid<br/>
+          3. Click <b style="color:#2563eb">Insert Code</b> to copy LaTeX<br/>
+          4. Paste into section content<br/>
+          <span style="color:#64748b">Uses booktabs: \\toprule, \\midrule, \\bottomrule</span>
+        </div>
+      </div>
+
+      <!-- HIGHLIGHTS -->
+      <div class="panel" id="panel-highlights" style="display:none">
+        <div class="fl">Highlights <span class="hint">3–5 items, each ≤ 85 chars</span></div>
+        <div id="hl-box"></div>
+        <button class="btn" id="btn-add-hl" style="margin-top:6px">+ Highlight</button>
+      </div>
+
+      <!-- SECTIONS -->
+      <div class="panel" id="panel-sections">
+        <div id="sec-list"></div>
+        <button class="btn" id="btn-add-sec" style="margin-top:6px;width:100%">+ Add Section</button>
+        <div class="divider" id="sec-divider" style="display:none"></div>
+        <div id="sec-editor" style="display:none">
+          <div class="fl">Section Title</div>
+          <input class="inp" id="inp-sec-title" />
+          <div class="fl" style="margin-top:10px">Content</div>
+          <div class="content-toolbar" id="content-toolbar">
+            <button class="tb-btn" data-ins="bold" title="\\textbf{text}"><b>B</b></button>
+            <button class="tb-btn" data-ins="italic" title="\\textit{text}"><i>I</i></button>
+            <button class="tb-btn" data-ins="emph" title="\\emph{text}">Em</button>
+            <button class="tb-btn" data-ins="indent" title="Indent selected paragraph by two characters">2em</button>
+            <span class="tb-sep"></span>
+            <button class="tb-btn" data-ins="cite" title="\\cite{key}">Cite</button>
+            <button class="tb-btn" data-ins="ref" title="\\ref{label}">Ref</button>
+            <button class="tb-btn" data-ins="label" title="\\label{name}">Lbl</button>
+            <span class="tb-sep"></span>
+            <button class="tb-btn" data-ins="subsection" title="Insert 1.1-style subsection">H2</button>
+            <span class="tb-sep"></span>
+            <button class="tb-btn" data-ins="equation" title="Numbered equation">Eq</button>
+            <button class="tb-btn" data-ins="align" title="Multi-line align">Align</button>
+            <button class="tb-btn" data-ins="math" title="$inline math$">$x$</button>
+            <button class="tb-btn" data-ins="dmath" title="$$display math$$">$$x$$</button>
+            <span class="tb-sep"></span>
+            <button class="tb-btn" data-ins="figure" title="\\begin{figure}">Fig</button>
+            <button class="tb-btn" data-ins="table" title="\\begin{table}">Tbl</button>
+            <span class="tb-sep"></span>
+            <button class="tb-btn" data-ins="si" title="\\SI{value}{unit}">SI</button>
+            <button class="tb-btn" data-ins="todo" title="\\todo{note}">TODO</button>
+            <label class="sync-toggle" title="Keep preview aligned with the active section"><input type="checkbox" id="sync-preview" checked />Sync</label>
+          </div>
+          <textarea class="ta with-toolbar" id="inp-sec-content" style="min-height:520px;font-size:13.5px;line-height:1.75;padding:12px 14px"></textarea>
+          <div class="word-count-bar">
+            <span id="sec-wordcount">0 words</span>
+            <span id="sec-charcount">0 chars</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BACK MATTER -->
+      <div class="panel" id="panel-back">
+        <div class="fl">CRediT Authorship Contribution Statement</div>
+        <textarea class="ta" id="inp-credit" style="min-height:80px"></textarea>
+        <div class="fl">Declaration of Competing Interest</div>
+        <textarea class="ta" id="inp-decl" style="min-height:60px"></textarea>
+        <div class="fl">Data Availability</div>
+        <textarea class="ta" id="inp-data" style="min-height:40px"></textarea>
+        <div class="fl">Acknowledgements</div>
+        <textarea class="ta" id="inp-ack" style="min-height:60px"></textarea>
+        <div class="divider"></div>
+        <div style="font-size:11px;color:#64748b;line-height:1.6">
+          <p style="font-weight:600;margin-bottom:6px;color:#334155">LaTeX Syntax Guide</p>
+          <table class="syntax-table">
+            <tr><td>$E = mc^2$</td><td>Inline math</td></tr>
+            <tr><td>$$\sum_{i=1}^n x_i$$</td><td>Display math (no number)</td></tr>
+            <tr><td>\begin{equation}...\end{equation}</td><td>Numbered equation</td></tr>
+            <tr><td>\begin{align}...\end{align}</td><td>Multi-line aligned</td></tr>
+            <tr><td>\label{eq:name}</td><td>Label an equation</td></tr>
+            <tr><td>\ref{eq:name}</td><td>Reference equation number</td></tr>
+            <tr><td>\textbf{text}</td><td>Bold</td></tr>
+            <tr><td>\textit{text}</td><td>Italic</td></tr>
+            <tr><td>\cite{key}</td><td>Citation [1]</td></tr>
+            <tr><td>\todo{note}</td><td>Todo marker</td></tr>
+            <tr><td>\noindent</td><td>No first-line indent (paragraph start)</td></tr>
+            <tr><td colspan="2" style="font-weight:600;color:#334155;padding-top:8px">Tables (booktabs)</td></tr>
+            <tr><td>\begin{table}[htbp]</td><td>Table environment</td></tr>
+            <tr><td>\toprule / \midrule / \bottomrule</td><td>Three-line table rules</td></tr>
+            <tr><td>\ref{table:name}</td><td>Reference table number</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Right: Live Preview ── -->
+  <div class="preview-area" id="preview-area">
+    <div class="page-info-bar" id="page-info-bar">Pages: <span id="page-count">1</span></div>
+    <div class="page-wrapper" id="page-wrapper"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════
+const DEFAULT_DATA = {
+  title: "Bridging Ground Thermal Shock and Low-Earth-Orbit Operation through Multiphysics Modeling Informed by Near-Space Measurements of Perovskite Solar Cells",
+  authors: [
+    { name: "First Author", affiliation: "inst1", email: "first@email.com", corresponding: true },
+    { name: "Second Author", affiliation: "inst1", email: "", corresponding: false },
+  ],
+  affiliations: [
+    { id: "inst1", text: "Department of XXX, University of XXX, City, Country" },
+    { id: "inst2", text: "Department of XXX, University of XXX, City, Country" },
+  ],
+  abstract: "Perovskite solar cells offer high specific power and tunable bandgaps attractive for space photovoltaics, yet translating terrestrial performance to orbital operation remains challenging because ground thermal shock protocols and low-Earth-orbit (LEO) thermal environments differ fundamentally in their boundary conditions. Here we establish a progressive two-model strategy that connects controlled ground thermal cycling, reported high-altitude balloon measurements, and orbit-resolved multiphysics simulation within a consistent device framework. A ground model constrained by the thermal shock protocol and device data of Lee et al. (Energy Environ. Sci., 2026) maps prescribed temperature histories to layer-resolved stress, strain energy, and electrical response. On the same multilayer architecture, a LEO model driven by solar irradiance, Earth albedo, and terrestrial infrared emission computes the orbital thermal balance and propagates the resulting fields through the identical thermo-mechanical-electrical chain. By comparing field variables—temperature rates, interfacial stresses, strain energy densities, and carrier metrics—rather than temperature ranges alone, this work quantifies the physical gap between ground experiments and orbital operation. The open-source Python workflow, configuration files, and reproducible examples are released alongside this paper, providing a physically consistent route for translating ground and near-space evidence into testable hypotheses for orbital perovskite photovoltaics.",
+  keywords: ["Perovskite solar cells", "Space photovoltaics", "Thermal shock", "Multiphysics modeling", "Low-Earth orbit", "Thermo-mechanical coupling"],
+  highlights: [
+    "Progressive two-model strategy bridging ground thermal shock and LEO operation",
+    "Field-variable comparison beyond simple temperature range matching",
+    "High-altitude balloon data used as reported near-space reference",
+    "Unified device framework for stress, strain energy, and electrical response",
+    "Open-source Python workflow with reproducible examples released",
+  ],
+  nomenclature: [
+    { symbol: "$T$", definition: "Temperature (K)" },
+    { symbol: "$\\sigma$", definition: "Thermal stress (Pa)" },
+    { symbol: "$U$", definition: "Strain energy density (J/m³)" },
+    { symbol: "$\\alpha$", definition: "Coefficient of thermal expansion (K⁻¹)" },
+    { symbol: "$E$", definition: "Young's modulus (Pa)" },
+    { symbol: "$G$", definition: "Solar irradiance (W/m²)" },
+    { symbol: "$q$", definition: "Heat flux (W/m²)" },
+    { symbol: "$\\eta$", definition: "Power conversion efficiency (%)" },
+  ],
+  sections: [
+    { id: "introduction", title: "1. Introduction", content: "\\noindent Space-based power systems demand photovoltaic technologies that combine high specific power, low launch mass, and scalable manufacturing[1,2]. Perovskite solar cells (PSCs) have emerged as a compelling photovoltaic technology for such missions: perovskite--silicon and all-perovskite tandem architectures now surpass 35\\% power conversion efficiency[3,4], and recent investigations have demonstrated encouraging radiation hardness against proton and electron irradiation, suggesting that perovskite-based devices could complement or, in certain mission profiles, supplant conventional III--V multi-junction cells[4,5]. Certified single-junction device efficiencies have reached 28\\% according to the NREL Best Research-Cell Efficiency Chart[5,6]. The intrinsically high power-to-mass ratio, bandgap tunability, mechanical flexibility, and solution processability of perovskite absorbers further render them attractive for large-area, lightweight space arrays[3,7]. Nevertheless, translating terrestrial device performance into reliable space operation necessitates explicit consideration of the environmental loads---thermal, radiative, and mechanical---to which multilayer perovskite solar cells are subjected in orbit[1,2].\n\nExperimental evidence for space-relevant PSC operation has accumulated across an expanding range of platforms, from ground-based irradiation studies to suborbital rocket flights[8], the International Space Station[9], high-altitude balloons (HABs)[10,11], and low-Earth-orbit (LEO) satellite deployments[12]. The recent study by Lee et al.[11] is particularly instructive because it combines a ground thermal shock protocol with HAB measurements on a common device platform, providing matched pre- and post-test performance data alongside near-space environmental records. Complementary rocket-flight[8] and ISS campaigns[9] have further demonstrated that perovskite devices can withstand launch loads and short-duration space exposure, while LEO thermal analyses[12] have begun to delineate the orbital temperature envelope. Proton irradiation studies and atomic oxygen investigations[13] add further environmental dimensions. Collectively, these efforts mark a transition from preliminary feasibility demonstrations toward systematic environmental qualification. Yet the thermal conditions, time scales, and environmental spectra differ markedly across platforms: a ground thermal shock cycle imposes temperature transitions on the order of minutes with prescribed profiles, whereas an orbital thermal cycle unfolds over approximately 90 minutes under radiative forcing governed by orbit geometry and surface properties. Reconciling results across such heterogeneous experiments therefore warrants a modeling framework capable of mapping platform-specific loads onto a consistent set of device-level response metrics.\n\nAt the material level, a perovskite solar cell constitutes a multilayer thin-film stack in which each constituent---transparent conductive oxide, electron and hole transport layers, perovskite absorber, buffer layers, and metallic back contact---possesses a distinct coefficient of thermal expansion, elastic modulus, and layer thickness[14,15]. Temperature variations induce mismatch strains that generate residual stresses within individual layers and stress concentrations at interfaces[16,17]. Repeated thermal cycling amplifies these effects: thermal gradients across the film thickness produce non-uniform stress distributions, and the progressive accumulation of strain energy can drive interfacial delamination, microcrack nucleation, and grain-boundary decohesion[18,19]. Critically, the mechanical response is coupled to electronic behavior---lattice strain modifies band-edge positions, alters defect formation energies and ion migration barriers, and influences carrier recombination lifetimes and transport characteristics[15,20]. Ground-based thermal shock experiments, in which devices are subjected to controlled temperature cycles between defined upper and lower bounds, provide a valuable testbed for probing these coupled thermo-mechanical mechanisms under reproducible conditions[21,22]. Such experiments reveal how repeated thermal extremes affect device architecture, interfacial integrity, and photovoltaic performance over hundreds or thousands of cycles. However, the temperature profiles imposed in these experiments are prescribed quantities dictated by laboratory equipment; they do not emerge from the radiative heat balance representative of orbital operation.\n\nThis distinction delineates a fundamental physical gap. In a ground thermal shock test, the temperature history---including ramp rates, dwell times, and extreme values---is an input controlled by the experimenter. In LEO, by contrast, the cell temperature is not prescribed but rather emerges from the instantaneous balance among direct solar irradiance, Earth-reflected shortwave radiation (albedo), Earth-emitted longwave (infrared) radiation, radiative heat rejection to deep space, periodic eclipse transitions dictated by orbital mechanics, and the thermal interface between the solar module and its host structure[23,24]. The resulting orbital temperature profile depends on orbit altitude and inclination, $\\beta$-angle, attitude, surface optical properties, and mounting configuration[12]. Consequently, the ramp rates, through-thickness thermal gradients, and interfacial stress states realized in orbit may differ substantially from those imposed in ground experiments, even when the nominal temperature ranges overlap. Merely comparing the minimum and maximum temperatures of a ground protocol with those reported for a LEO environment is therefore insufficient to establish a physically meaningful correspondence between the two regimes. A rigorous connection requires that field variables---including temperature histories, instantaneous rates of temperature change, spatial stress distributions, strain energy densities at critical interfaces, and their downstream effects on carrier dynamics---be evaluated on a consistent multilayer device model[11,23,25,26].\n\nDespite the growing body of experimental data and the parallel maturation of thermal stress modeling, several interconnected gaps persist. First, ground thermal shock models and orbital thermal models have largely evolved as separate endeavors: the former typically adopt prescribed temperature boundary conditions validated against laboratory cycling data[11,19], whereas the latter solve radiative heat balance equations to predict in-orbit temperatures[23,24], yet the two approaches have seldom been formulated within a single computational framework or compared against common device-level metrics. Second, existing orbital analyses of PSCs have predominantly focused on temperature estimation or energy-yield prediction[12], with comparatively few efforts tracing the full causal chain from orbit-resolved thermal loads through layer-resolved thermal stress and strain energy to electrical performance indicators. Third, a reproducible modeling route grounded in publicly available experimental data, with clearly documented parameter sources and open-source implementation, has yet to be established for progressively connecting ground thermal shock measurements, near-space observations, and orbital device predictions.\n\nA unified modeling route that progressively connects controlled ground thermal shock, reported near-space measurements, and orbit-resolved device operation therefore remains underdeveloped. Here, we establish a progressive two-model strategy for perovskite solar cells under ground and orbital thermal environments. A ground model is constructed using the thermal shock protocol, device performance data, and HAB measurements reported by Lee et al.[11] as experimental constraints. On a consistent multilayer device architecture, a companion LEO model is developed in which the thermal boundary conditions are governed by solar irradiance, Earth albedo, and terrestrial infrared emission. Environmental loads in both models are sequentially mapped to layer-resolved temperature fields, thermal stress distributions, strain energy densities at critical interfaces, and electrical response metrics. Rather than comparing temperature ranges alone, this work evaluates field variables---including temperature rates of change, interfacial stress amplitudes, and carrier-level indicators---across the ground and orbital regimes, thereby rigorously quantifying the physical gap between laboratory thermal cycling and in-orbit operation. The complete Python workflow, configuration files, parameter documentation, and reproducible examples are provided as open-source resources. The resulting open modeling framework offers a physically consistent route for translating ground and near-space evidence into testable hypotheses for orbital perovskite photovoltaics." },
+    { id: "methodology", title: "2. Methodology", content: "\\todo{Write the methodology section}" },
+    { id: "results", title: "3. Results and Discussion", content: "\\todo{Write the results and discussion section}" },
+    { id: "conclusions", title: "4. Conclusions", content: "\\todo{Write the conclusions section}" },
+    { id: "references", title: "References", content: "[1] Mejia Escobar, M.A., Algora, C., 2025. Surveying the potential of flexible and high-specific-power photovoltaic assemblies and arrays for space applications. Joule 9 (11), 102194. https://doi.org/10.1016/j.joule.2025.102194\n\n[2] Zheng, Y., Zhang, S., Shen, Z., Bin, L., Luo, Z., Zhu, R., Shao, Y., 2025. Advancing perovskite photovoltaics for space: critical stability testing guidelines. Adv. Photonics 7 (3), 030502. https://doi.org/10.1117/1.ap.7.3.030502\n\n[3] Yoon, G.W., Jo, B., Boonmongkolras, P., Han, G.S., Jung, H.S., 2025. Perovskite tandem solar cells for low Earth orbit satellite power applications. Adv. Energy Mater. 15 (2), 2400204. https://doi.org/10.1002/aenm.202400204\n\n[4] Huan, Z., Zheng, Y., Wang, K., Shen, Z., Ni, W., Zu, J., Shao, Y., 2024. Advancements in radiation resistance and reinforcement strategies of perovskite solar cells in space applications. J. Mater. Chem. A 12 (4), 1910-1922. https://doi.org/10.1039/D3TA06388G\n\n[5] Lang, F., Jost, M., Frohna, K., Kohnen, E., Al-Ashouri, A., Bowman, A.R., Bertram, T., Morales-Vilches, A.B., Koushik, D., Tennyson, E.M., Galkowski, K., Landi, G., Creatore, M., Stannowski, B., Kaufmann, C.A., Bundesmann, J., Rappich, J., Rech, B., Denker, A., Albrecht, S., Neitzert, H.-C., Nickel, N.H., Stranks, S.D., 2020. Proton radiation hardness of perovskite tandem photovoltaics. Joule 4 (5), 1054-1069. https://doi.org/10.1016/j.joule.2020.03.006\n\n[6] National Renewable Energy Laboratory (NREL), 2025. Best Research-Cell Efficiency Chart (68th edition). https://www.nrel.gov/pv/cell-efficiency.html [Accessed June 2025]\n\n[7] Kim, W., Koo, B., Ko, M.J., 2026. Perovskite solar cells for extreme environments: Tailoring material design and exploring new opportunities. Nano-Micro Lett. 18 (1). https://doi.org/10.1007/s40820-026-02173-0\n\n[8] Reb, L.K., Bohmer, M., Predeschly, B., Grott, S., Weindl, C.L., Ivandekic, G.I., Guo, R., Dreissigacker, C., Gernhauser, R., Meyer, A., Muller-Buschbaum, P., 2020. Perovskite and organic solar cells on a rocket flight. Joule 4 (9), 1880-1892. https://doi.org/10.1016/j.joule.2020.07.004\n\n[9] Delmas, W., Erickson, S., Arteaga, J., Woodall, M., Scheibner, M., Krause, T.S., Crowley, K., VanSant, K.T., Luther, J.M., Williams, J.N., McNatt, J., Peshek, T.J., McMillon-Brown, L., Ghosh, S., 2023. Evaluation of hybrid perovskite prototypes after 10-month space flight on the International Space Station. Adv. Energy Mater. 13 (19), 2203920. https://doi.org/10.1002/aenm.202203920\n\n[10] Putz, C., Lehner, L.E., Demchyshyn, S., Hailegnaw, B., Jahelka, P., Breitwieser, M., Ozen, S., Denker, A., Bundesmann, J., Dittwald, A.H., Karabulut, D., Tockhorn, P., Albrecht, S., Lang, F., Scharber, M.C., Kelzenberg, M.D., Atwater, H.A., Kaltenbrunner, M., 2026. Beyond Earth: Resilience of quasi-2D perovskite solar cells in space. Adv. Mater. 38 (31), e2520433. https://doi.org/10.1002/adma.202520433\n\n[11] Lee, M., Asare, G.K., Richards, T.H., Lee, D.G., Lee, T.K., Park, J., Oh, J., Lim, J., Green, M.A., Hao, X., Kim, D., Park, H.H., Yun, J.S., 2026. Towards space compatible perovskite solar cells: Guidelines for thermal shock resilience and near space balloon testing. Energy Environ. Sci. 19 (8), 2557-2568. https://doi.org/10.1039/D5EE03704B\n\n[12] Krause, T.S., VanSant, K.T., Lininger, A., Crowley, K., Peshek, T.J., McMillon-Brown, L., 2023. Thermal performance of perovskite-based photovoltaics for operation in low Earth orbit. Sol. RRL 7 (21), 2300468. https://doi.org/10.1002/solr.202300468\n\n[13] Seid, B.A., Sarisozen, S., Pena-Camargo, F., Ozen, S., Gutierrez-Partida, E., Solano, E., Steele, J.A., Stolterfoht, M., Neher, D., Lang, F., 2024. Understanding and mitigating atomic oxygen-induced degradation of perovskite solar cells for near-Earth space applications. Small 20 (30), 2311097. https://doi.org/10.1002/smll.202311097\n\n[14] Steele, J.A., 2026. Atomistic origins of anharmonic lattice dynamics and thermal expansion in perovskite photovoltaics. Nat. Energy 11 (3), 372-386. https://doi.org/10.1038/s41560-025-01938-y\n\n[15] Wu, J., Liu, S.-C., Li, Z., Wang, S., Xue, D.-J., Lin, Y., Hu, J.-S., 2021. Strain in perovskite solar cells: Origins, impacts and regulation. Natl. Sci. Rev. 8 (8), nwab047. https://doi.org/10.1093/nsr/nwab047\n\n[16] Wang, H., Zhu, C., Liu, L., Ma, S., Liu, P., Wu, J., Shi, C., Du, Q., Hao, Y., Xiang, S., Chen, H., Chen, P., Bai, Y., Zhou, H., Li, Y., Chen, Q., 2019. Interfacial residual stress relaxation in perovskite solar cells with improved stability. Adv. Mater. 31 (48), 1904408. https://doi.org/10.1002/adma.201904408\n\n[17] Rolston, N., Bush, K.A., Printz, A.D., Gold-Parker, A., Ding, Y., Toney, M.F., McGehee, M.D., Dauskardt, R.H., 2018. Engineering stress in perovskite solar cells to improve stability. Adv. Energy Mater. 8 (29), 1802139. https://doi.org/10.1002/aenm.201802139\n\n[18] Chen, M., Dong, Y., Zhang, Y., Zheng, X., McAndrews, G.R., Dai, Z., Jiang, Q., You, S., Liu, T., Harvey, S.P., Zhu, K., Oliveto, V., Jackson, A., Witteck, R., Wheeler, L.M., Padture, N.P., Dyson, P.J., McGehee, M.D., Nazeeruddin, M.K., Beard, M.C., Luther, J.M., 2024. Stress engineering for mitigating thermal cycling fatigue in perovskite photovoltaics. ACS Energy Lett. 9 (6), 2582-2589. https://doi.org/10.1021/acsenergylett.4c00988\n\n[19] Yilmaz, C., Buyruk, A., Shi, Y., Levashov, S., Li, X., Hooijer, R., Huang, J., Zhu, H., Fischer, O., Schubert, M.C., Deger, C., Yavuz, I., Ugur, E., Lubineau, G., Eichhorn, J., Zhang, F., Aydin, E., 2026. Perovskite solar cells with enhanced thermal fatigue resistance under extreme temperature cycling. Nat. Commun. 17, 3669. https://doi.org/10.1038/s41467-026-70293-7\n\n[20] Zhu, C., Niu, X., Fu, Y., Li, N., Hu, C., Chen, Y., He, X., Na, G., Liu, P., Zai, H., Ge, Y., Lu, Y., Ke, X., Bai, Y., Yang, S., Chen, P., Li, Y., Sui, M., Zhang, L., Zhou, H., Chen, Q., 2019. Strain engineering in perovskite solar cells and its impacts on carrier dynamics. Nat. Commun. 10, 815. https://doi.org/10.1038/s41467-019-08507-4\n\n[21] Cheacharoen, R., Boyd, C.C., Burkhard, G.F., Leijtens, T., Raiford, J.A., Bush, K.A., Bent, S.F., McGehee, M.D., 2018. Encapsulating perovskite solar cells to withstand damp heat and thermal cycling. Sustain. Energy Fuels 2 (11), 2398-2406. https://doi.org/10.1039/C8SE00250A\n\n[22] Boyd, C.C., Cheacharoen, R., Leijtens, T., McGehee, M.D., 2019. Understanding degradation mechanisms and improving stability of perovskite photovoltaics. Chem. Rev. 119 (5), 3418-3451. https://doi.org/10.1021/acs.chemrev.8b00336\n\n[23] Kim, H.K., Han, C.Y., 2010. Analytical and numerical approaches of a solar array thermal analysis in a low-earth orbit satellite. Adv. Space Res. 46 (11), 1427-1439. https://doi.org/10.1016/j.asr.2010.08.023\n\n[24] Vaillon, R., Parola, S., Lamnatou, C., Chemisana, D., 2020. Solar cells operating under thermal stress. Cell Rep. Phys. Sci. 1 (12), 100267. https://doi.org/10.1016/j.xcrp.2020.100267\n\n[25] Dailey, M., Li, Y., Printz, A.D., 2021. Residual film stresses in perovskite solar cells: Origins, effects, and mitigation strategies. ACS Omega 6 (45), 30214-30223. https://doi.org/10.1021/acsomega.1c04814\n\n[26] Zhang, H., et al., 2025. Latest strategies promoting stable and efficient perovskite, organic, and perovskite-organic tandem solar cells. Adv. Mater. Interfaces 12 (13). https://doi.org/10.1002/admi.202500204" },
+  ],
+  credit: "First Author: Conceptualization, Methodology, Software, Writing \u2013 Original Draft. Second Author: Validation, Investigation, Writing \u2013 Review & Editing.",
+  declaration: "The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.",
+  dataAvailability: "The open-source Python workflow, configuration files, parameter documentation, and reproducible examples are available at [repository URL to be provided upon acceptance].",
+  acknowledgements: "This work was supported by the [Funding Agency] under Grant No. [XXXX]. The authors thank [colleagues/facilities] for valuable discussions and technical support.",
+  figures: [],
+  tables: [],
+};
+
+const STORAGE_KEY = "solar_energy_paper_v5";
+let saveTimer = null;
+
+// Citation key → numbered reference mapping (for migration from \cite{} to [x])
+const CITE_KEY_MAP = {
+  mejia2025:'1',zheng2025:'2',yoon2025:'3',huan2024:'4',lang2020:'5',
+  nrel2025:'6',kim2026:'7',reb2020:'8',delmas2023:'9',putz2026:'10',
+  lee2026:'11',krause2023:'12',seid2024:'13',steele2026:'14',wu2021:'15',
+  wang2019:'16',rolston2018:'17',chen2024:'18',yilmaz2026:'19',
+  zhu2019:'20',cheacharoen2018:'21',boyd2019:'22',kim2010:'23',vaillon2020:'24',
+  dailey2021:'25',zhang2025:'26'
+};
+function migrateCitations(d) {
+  if (!d.sections) return;
+  d.sections.forEach(function(s) {
+    if (!s.content || s.content.indexOf('cite{') === -1) return;
+    s.content = s.content.replace(/\\cite\{([^}]+)\}/g, function(m, keys) {
+      var nums = keys.split(',').map(function(k){return CITE_KEY_MAP[k.trim()]||k.trim();}).join(',');
+      return '[' + nums + ']';
+    });
+  });
+}
+
+function decodeStoredUnicodeEscapes(d) {
+  function decodeString(s) {
+    return typeof s === 'string'
+      ? s.replace(/\\u([0-9a-fA-F]{4})/g, function(_, hex) { return String.fromCharCode(parseInt(hex, 16)); })
+      : s;
+  }
+  function walk(v) {
+    if (Array.isArray(v)) return v.forEach(walk);
+    if (v && typeof v === 'object') {
+      Object.keys(v).forEach(function(k) {
+        if (typeof v[k] === 'string') v[k] = decodeString(v[k]);
+        else walk(v[k]);
+      });
+    }
+  }
+  walk(d);
+}
+
+function loadData() {
+  var d;
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) d = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_DATA)), JSON.parse(s));
+  } catch(e) {}
+  if (!d) d = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  migrateCitations(d);
+  decodeStoredUnicodeEscapes(d);
+  return d;
+}
+
+function saveData() {
+  const dot = document.getElementById('save-dot');
+  const st = document.getElementById('save-status');
+  dot.style.background = '#f59e0b'; st.textContent = 'Saving...';
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const t = new Date(), ts = [t.getHours(),t.getMinutes(),t.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
+    setTimeout(() => { dot.style.background = '#22c55e'; st.textContent = 'Saved at ' + ts; }, 150);
+  } catch(e) { dot.style.background='#22c55e'; st.textContent='Save failed'; }
+}
+
+function debouncedSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveData, 400); }
+
+const data = loadData();
+let activeSecId = data.sections[0]?.id || "";
+
+// ═══════════════════════════════════════════════════
+//  TEXT / MATH RENDERING
+// ═══════════════════════════════════════════════════
+function renderMath(t) {
+  if (!t) return "";
+  t = t.replace(/\$\$([^$]+)\$\$/g, (_,e) => { try { return katex.renderToString(e.trim(),{displayMode:true,throwOnError:false}); } catch(e) { return "$"+e+"$"; } });
+  t = t.replace(/\$([^$\n]+)\$/g, (_,e) => { try { return katex.renderToString(e.trim(),{displayMode:false,throwOnError:false}); } catch(e) { return "$"+e+"$"; } });
+  return t;
+}
+
+// ─── Equation counter & label map ───
+let eqCounter = 0;
+let eqLabels = {};
+
+function resetEqState() { eqCounter = 0; eqLabels = {}; }
+
+// ─── Shared block placeholder system ───
+let __blocks = [];
+
+function storeBlock(html) {
+  const idx = __blocks.length;
+  __blocks.push(html);
+  return '%%__BLK_' + idx + '%%';
+}
+
+function processSubsections(text) {
+  const re = /\\subsection\{([^}]+)\}/g;
+  text = text.replace(re, (_, title) => {
+    return '\n' + storeBlock('<div class="p-subsec-title">' + esc(title) + '</div>') + '\n';
+  });
+  return text;
+}
+
+function processEquations(text) {
+  const envs = ['equation', 'align'];
+  envs.forEach(env => {
+    const reNum = new RegExp('\\\\begin\\{' + env + '\\}([\\s\\S]*?)\\\\end\\{' + env + '\\}', 'g');
+    text = text.replace(reNum, (_, body) => {
+      eqCounter++;
+      const num = eqCounter;
+      let label = '';
+      body = body.replace(/\\label\{([^}]+)\}/g, (m, lbl) => { label = lbl; eqLabels[lbl] = num; return ''; });
+      const labelAttr = label ? ' data-eq-label="' + label + '"' : '';
+      let rendered;
+      try { rendered = katex.renderToString(body.trim(), { displayMode: true, throwOnError: false }); }
+      catch(e) { rendered = esc(body); }
+      return storeBlock('<div class="equation-block"' + labelAttr + '>' + rendered + '<span class="eq-num">(' + num + ')</span></div>');
+    });
+    const reStar = new RegExp('\\\\begin\\{' + env + '\\*\\}([\\s\\S]*?)\\\\end\\{' + env + '\\*\\}', 'g');
+    text = text.replace(reStar, (_, body) => {
+      body = body.replace(/\\label\{[^}]+\}/g, '');
+      let rendered;
+      try { rendered = katex.renderToString(body.trim(), { displayMode: true, throwOnError: false }); }
+      catch(e) { rendered = esc(body); }
+      return storeBlock('<div class="equation-block">' + rendered + '</div>');
+    });
+  });
+  return text;
+}
+
+function processFigures(text) {
+  const re = /\\begin\{figure\*?\}(?:\[[^\]]*\])?([\s\S]*?)\\end\{figure\*?\}/g;
+  text = text.replace(re, (_, body) => {
+    figCounter++;
+    const num = figCounter;
+    let widthPct = '80%';
+    const wMatch = body.match(/width\s*=\s*([\d.]+)\\textwidth/);
+    if (wMatch) {
+      widthPct = Math.round(parseFloat(wMatch[1]) * 100) + '%';
+    }
+    let imgHtml = '', figId = '';
+    const igMatch = body.match(/\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}/);
+    if (igMatch) {
+      figId = igMatch[1];
+      const fig = data.figures.find(f => f.id === figId);
+      if (fig) {
+        if (!wMatch && fig.width) widthPct = fig.width + '%';
+        if (fig.base64) imgHtml = '<img src="' + fig.base64 + '" style="max-width:' + widthPct + ';height:auto" />';
+        else imgHtml = '<div class="fig-placeholder"><span style="font-size:24px">&#128444;</span>' + esc(figId) + '<span style="font-size:10px">Upload in Figures tab</span></div>';
+      } else {
+        imgHtml = '<div class="fig-placeholder"><span style="font-size:24px">&#128444;</span>' + esc(figId) + '<span style="font-size:10px">Upload in Figures tab</span></div>';
+      }
+    }
+    let caption = '';
+    const capMatch = body.match(/\\caption\{([\s\S]*)\}/);
+    if (capMatch) caption = capMatch[1];
+    body = body.replace(/\\label\{([^}]+)\}/g, (_, lbl) => { figLabels[lbl] = num; return ''; });
+    if (!caption && figId) { const fig = data.figures.find(f => f.id === figId); if (fig) caption = fig.caption; }
+    let html = '<div class="figure-block">' + imgHtml;
+    if (caption) html += '<div class="fig-caption"><b>Fig. ' + num + '.</b> ' + esc(caption) + '</div>';
+    html += '</div>';
+    return storeBlock(html);
+  });
+  return text;
+}
+
+function resolveRefs(text) {
+  return text.replace(/<span class="p-cite">§([^<]+)<\/span>/g, (_, label) => {
+    if (figLabels[label] !== undefined) return '<span class="fig-ref">Fig. ' + figLabels[label] + '</span>';
+    if (tblLabels[label] !== undefined) return '<span class="tbl-ref">Table ' + tblLabels[label] + '</span>';
+    if (eqLabels[label] !== undefined) return '<span class="eq-ref">(' + eqLabels[label] + ')</span>';
+    return '<span class="p-cite">§' + label + '</span>';
+  });
+}
+
+function textToHtml(raw) {
+  if (!raw) return '<span class="p-empty">Empty — click to edit</span>';
+
+  // Step 1: Extract blocks into placeholders BEFORE any escaping
+  let t = processTables(raw);
+  t = processSubsections(t);
+  t = processEquations(t);
+  t = processFigures(t);
+
+  // Step 2: HTML-escape (placeholders are plain text, unaffected)
+  let h = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Step 3: Inline LaTeX formatting
+  h = h.replace(/\\textbf\{([^}]+)\}/g, '<strong>$1</strong>')
+    .replace(/\\textit\{([^}]+)\}/g, '<em>$1</em>')
+    .replace(/\\emph\{([^}]+)\}/g, '<em>$1</em>')
+    .replace(/\\indenttwo\{([\s\S]*?)\}/g, '<span data-indent-two="1">$1</span>')
+    .replace(/\\cite\{([^}]+)\}/g, '<span class="p-cite">[$1]</span>')
+    .replace(/\\ref\{([^}]+)\}/g, '<span class="p-cite">§$1</span>')
+    .replace(/\\todo\{([^}]+)\}/g, '<span class="p-todo">[TODO: $1]</span>');
+
+  // Step 4: Inline & display math
+  h = renderMath(h);
+
+  // Step 5: Resolve references
+  h = resolveRefs(h);
+
+  // Step 6: Paragraphs
+  const parts = h.split(/\n\s*\n/);
+  h = parts.map(part => {
+    part = part.trim();
+    if (!part) return '';
+    const pureMatch = part.match(/^%%__BLK_(\d+)%%$/);
+    if (pureMatch) return __blocks[+pureMatch[1]];
+    if (part.includes('%%__BLK_')) return part.replace(/%%__BLK_(\d+)%%/g, (_, i) => __blocks[+i]);
+    const noIndent = /^\\noindent\s*/.test(part);
+    if (noIndent) part = part.replace(/^\\noindent\s*/, '');
+    const indentTwo = /data-indent-two="1"/.test(part);
+    part = part.replace(/<span data-indent-two="1">([\s\S]*?)<\/span>/g, '$1');
+    const cls = noIndent ? ' class="no-indent"' : indentTwo ? ' class="indent-2"' : '';
+    return '<p' + cls + '>' + part.replace(/\n/g, '<br/>') + '</p>';
+  }).join('');
+
+  // Step 7: Safety restore
+  h = h.replace(/%%__BLK_(\d+)%%/g, (_, i) => __blocks[+i] || '');
+  return h;
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escA(s) { return (s||'').replace(/"/g,'&quot;'); }
+
+function htmlToOrderedUnits(html) {
+  var box = document.createElement('div');
+  box.innerHTML = html || '';
+  return Array.from(box.childNodes).map(function(node) {
+    if (node.nodeType === 1) return node.outerHTML;
+    if (node.nodeType === 3 && node.textContent.trim()) return '<p>' + esc(node.textContent.trim()) + '</p>';
+    return '';
+  }).filter(Boolean);
+}
+
+// ═══════════════════════════════════════════════════
+//  PREVIEW — WITH PAGINATION
+// ═══════════════════════════════════════════════════
+const PAGE_CONTENT_H = 898; // 994 - 48*2 padding (A4 proportional)
+
+function generateBlocks(d) {
+  // Returns an array of { html, keepTogether } block objects
+  const blocks = [];
+
+  // Title
+  blocks.push({ html: '<div class="p-title" data-preview-top="1">'+esc(d.title)+'</div>', keep: true });
+
+  // Authors
+  let auth = '<div class="p-authors">';
+  d.authors.forEach((a,i) => {
+    auth += esc(a.name)+'<sup>'+esc(a.affiliation)+(a.corresponding?' *':'')+'</sup>';
+    if (i < d.authors.length-1) auth += ', ';
+  });
+  auth += '</div>';
+  blocks.push({ html: auth, keep: true });
+
+  // Affiliations
+  let affil = '<div class="p-affil">';
+  d.affiliations.forEach(a => { affil += '<div><sup>'+esc(a.id)+'</sup> '+esc(a.text)+'</div>'; });
+  affil += '</div>';
+  blocks.push({ html: affil, keep: true });
+
+  const coFirst = d.authors.filter(a=>a.cofirst);
+  if (coFirst.length) blocks.push({ html: '<div class="p-author-note">These authors contributed equally: '+coFirst.map(a=>esc(a.name)).join(', ')+'</div>', keep: true });
+  const corr = d.authors.filter(a=>a.corresponding);
+  if (corr.length) blocks.push({ html: '<div class="p-corr">* Corresponding author: '+corr.map(a=>esc(a.email)).filter(Boolean).join(', ')+'</div>', keep: true });
+
+  blocks.push({ html: '<hr class="p-hr"/>', keep: false });
+
+  // Abstract
+  blocks.push({ html: '<div class="keep-together" data-preview-area="abstract"><div class="p-sec-title" style="font-size:13px;text-transform:uppercase;letter-spacing:.04em;margin-top:0">Abstract</div><div class="p-abstract">'+textToHtml(d.abstract)+'</div></div>', keep: true });
+
+  // Keywords
+  blocks.push({ html: '<div class="p-kw"><b>Keywords:</b> '+d.keywords.map(k=>esc(k)).join('; ')+'</div>', keep: true });
+
+  blocks.push({ html: '<hr class="p-hr"/>', keep: false });
+
+  // Nomenclature
+  if (d.nomenclature.length && d.nomenclature.some(n=>n.symbol.trim())) {
+    let nom = '<div class="p-sec-title-star">Nomenclature</div>';
+    nom += '<table class="p-nom-table"><thead><tr><th>Symbol</th><th>Definition</th></tr></thead><tbody>';
+    d.nomenclature.forEach(n => {
+      if (n.symbol.trim()) nom += '<tr><td>'+renderMath(esc(n.symbol).replace(/&amp;/g,'&'))+'</td><td>'+esc(n.definition)+'</td></tr>';
+    });
+    nom += '</tbody></table>';
+    blocks.push({ html: nom, keep: true });
+    blocks.push({ html: '<hr class="p-hr"/>', keep: false });
+  }
+
+  // Sections — each block tagged with section-id + paragraph index for scroll sync
+  d.sections.forEach(sec => {
+    blocks.push({ html: '<div class="p-sec-title" data-sec-id="'+escA(sec.id)+'">'+esc(sec.title)+'</div>', keep: true });
+    var units = htmlToOrderedUnits(textToHtml(sec.content));
+    units.forEach(function(unit, pidx) {
+      blocks.push({ html: '<div class="p-body" data-sec-id="'+escA(sec.id)+'" data-pidx="'+pidx+'">'+unit+'</div>', keep: false });
+    });
+  });
+
+  blocks.push({ html: '<hr class="p-hr"/>', keep: false });
+
+  // Back matter
+  const backItems = [
+    { title: 'CRediT Authorship Contribution Statement', content: d.credit, inputId: 'inp-credit' },
+    { title: 'Declaration of Competing Interest', content: d.declaration, inputId: 'inp-decl' },
+    { title: 'Data Availability', content: d.dataAvailability, inputId: 'inp-data' },
+    { title: 'Acknowledgements', content: d.acknowledgements, inputId: 'inp-ack' },
+  ];
+  backItems.forEach(item => {
+    if (item.content && item.content.trim()) {
+      blocks.push({ html: '<div class="keep-together" data-back-matter="1" data-back-id="'+item.inputId+'"><div class="p-sec-title-star">'+esc(item.title)+'</div><div class="p-statement">'+textToHtml(item.content)+'</div></div>', keep: true });
+    }
+  });
+
+  return blocks;
+}
+
+// ── Split a <p> element's HTML at a visible-text character offset ──
+function splitParagraph(el, textCharPos) {
+  function walk(parent, target) {
+    for (var i = 0; i < parent.childNodes.length; i++) {
+      var nd = parent.childNodes[i];
+      if (nd.nodeType === 3) {
+        if (target.pos >= nd.length) { target.pos -= nd.length; }
+        else { target.node = nd; target.offset = target.pos; target.pos = 0; return; }
+      } else if (nd.nodeType === 1) { walk(nd, target); if (target.node) return; }
+    }
+  }
+  var leftC = el.cloneNode(true), rightC = el.cloneNode(true);
+  var tL = {pos: textCharPos, node: null, offset: 0}; walk(leftC, tL);
+  if (tL.node) tL.node.textContent = tL.node.textContent.substring(0, tL.offset);
+  var tR = {pos: textCharPos, node: null, offset: 0}; walk(rightC, tR);
+  if (tR.node) tR.node.textContent = tR.node.textContent.substring(tR.offset);
+  return {left: leftC.outerHTML, right: rightC.outerHTML};
+}
+
+function renderPreview() {
+  __blocks = [];
+  resetEqState();
+  resetFigState();
+  resetTblState();
+  var blocks = generateBlocks(data);
+  var wrapper = document.getElementById('page-wrapper');
+
+  // Measurement container — real .page so all CSS selectors apply
+  var mPage = document.createElement('div');
+  mPage.className = 'page';
+  mPage.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;min-height:0;height:auto;overflow:visible;';
+  document.body.appendChild(mPage);
+
+  var remaining = blocks.map(function(b){ return b.html; }).join('');
+  var pages = [];
+
+  while (remaining.length > 0) {
+    // Render ALL remaining content into measurement page
+    mPage.innerHTML = '<div class="p-body">' + remaining + '</div>';
+    var body = mPage.querySelector('.p-body');
+    var kids = body.children;
+
+    if (kids.length === 0) break;
+
+    var bodyTop = body.getBoundingClientRect().top;
+    var boundary = bodyTop + PAGE_CONTENT_H;
+
+    // Find first child whose bottom crosses the page boundary
+    var breakIdx = -1;
+    for (var i = 0; i < kids.length; i++) {
+      if (kids[i].getBoundingClientRect().bottom > boundary + 1) { breakIdx = i; break; }
+    }
+
+    if (breakIdx === -1) {
+      // Everything fits on this page
+      pages.push(remaining);
+      break;
+    }
+
+    // Accumulate HTML length of children before breakIdx
+    var splitLen = 0;
+    for (var j = 0; j < breakIdx; j++) splitLen += kids[j].outerHTML.length;
+
+    var el = kids[breakIdx];
+    var isP = el.tagName === 'P';
+    var elRect = el.getBoundingClientRect();
+
+    if (isP && elRect.top < boundary - 10) {
+      // Paragraph crosses boundary → split at the correct line
+      var remain = boundary - elRect.top;
+      var cs = getComputedStyle(el);
+      var lh = parseFloat(cs.lineHeight);
+      if (isNaN(lh)) lh = parseFloat(cs.fontSize) * 1.75;
+      var fitLines = Math.max(1, Math.floor(remain / lh));
+      var totalText = el.textContent.length;
+      var totalLines = Math.max(1, Math.round(el.scrollHeight / lh));
+      var charsFit = Math.min(totalText, Math.round(fitLines / totalLines * totalText));
+
+      var sp = splitParagraph(el, charsFit);
+      if (sp) {
+        // Replace original element HTML with left part
+        var elOuter = el.outerHTML;
+        var pagePart = remaining.substring(0, splitLen) + remaining.substring(splitLen).replace(elOuter, sp.left);
+        pages.push(pagePart);
+        remaining = sp.right + remaining.substring(splitLen + elOuter.length);
+        continue;
+      }
+    }
+
+    // Non-paragraph or split failed → take everything before this element
+    if (splitLen > 0) {
+      pages.push(remaining.substring(0, splitLen));
+      remaining = remaining.substring(splitLen);
+    } else {
+      // Element taller than full page → force onto own page
+      pages.push(el.outerHTML);
+      remaining = remaining.substring(el.outerHTML.length);
+    }
+  }
+
+  mPage.remove();
+  if (pages.length === 0) pages = [''];
+
+  // ── Render ──
+  var out = '';
+  pages.forEach(function(pg, i) {
+    out += '<div class="page"><div class="page-content">' + pg + '</div><div class="page-num">' + (i+1) + '</div></div>';
+  });
+  wrapper.innerHTML = out;
+  document.getElementById('page-count').textContent = pages.length;
+  debouncedSave();
+}
+
+function syncPreviewToSection(secId) {
+  var sync = document.getElementById('sync-preview');
+  if (sync && !sync.checked) return;
+  var area = document.querySelector('.preview-area');
+  if (!area) return;
+  var target = document.querySelector('.p-sec-title[data-sec-id="' + CSS.escape(secId) + '"]');
+  if (!target) return;
+  var top = target.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 80;
+  area.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
+
+var _lastSyncPidx = -1;
+var _lastSyncSec = '';
+
+function syncPreviewToCursor() {
+  var sync = document.getElementById('sync-preview');
+  if (sync && !sync.checked) return;
+  var area = document.querySelector('.preview-area');
+  if (!area) return;
+  var sec = data.sections.find(function(s){ return s.id === activeSecId; });
+  if (!sec) return;
+
+  var co = document.getElementById('inp-sec-content');
+  if (!co) return;
+  var text = co.value;
+  var cursorPos = co.selectionStart;
+  var beforeCursor = text.substring(0, cursorPos);
+
+  // Count paragraphs: same splitting as textToHtml (split by \n\s*\n)
+  var parts = beforeCursor.split(/\n\s*\n/).filter(function(p){ return p.trim(); });
+  var pidx = Math.max(0, parts.length - 1);
+
+  // Only scroll when moving to a different paragraph
+  var needScroll = (pidx !== _lastSyncPidx || sec.id !== _lastSyncSec);
+  _lastSyncPidx = pidx;
+  _lastSyncSec = sec.id;
+
+  if (needScroll) {
+    var titleEl = document.querySelector('.p-sec-title[data-sec-id="' + CSS.escape(sec.id) + '"]');
+    if (titleEl) {
+      var titleTop = titleEl.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 80;
+      area.scrollTop = Math.max(0, titleTop);
+    }
+    var bodies = document.querySelectorAll('.p-body[data-sec-id="' + CSS.escape(sec.id) + '"]');
+    if (bodies.length > 0) {
+      var idx = Math.min(pidx, bodies.length - 1);
+      var target = bodies[idx];
+      var targetTop = target.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 100;
+      area.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+    }
+  }
+
+  // Highlight the word at/near cursor in preview — pass ALL bodies for correct global indexing
+  var bodies = document.querySelectorAll('.p-body[data-sec-id="' + CSS.escape(sec.id) + '"]');
+  if (bodies.length > 0) {
+    highlightWordInElement(Array.from(bodies), text, cursorPos);
+  }
+}
+
+// Generic sync for non-section inputs (abstract, back matter, etc.)
+function syncPreviewFromInput(inputEl) {
+  var sync = document.getElementById('sync-preview');
+  if (sync && !sync.checked) return;
+  var area = document.querySelector('.preview-area');
+  if (!area) return;
+  var inputId = inputEl.id;
+  var previewEl = null;
+
+  if (inputId === 'inp-abstract') {
+    previewEl = document.querySelector('[data-preview-area="abstract"]');
+  } else if (inputId === 'inp-title') {
+    previewEl = document.querySelector('[data-preview-top]');
+  } else if (inputId === 'inp-credit' || inputId === 'inp-decl' || inputId === 'inp-data' || inputId === 'inp-ack') {
+    previewEl = document.querySelector('[data-back-id="' + inputId + '"]');
+  }
+  if (!previewEl) return;
+
+  // Scroll preview to this element
+  var top = previewEl.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 80;
+  area.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+
+  // Highlight word near cursor
+  highlightWordInElement([previewEl], inputEl.value, inputEl.selectionStart);
+}
+
+function highlightWordInElement(previewEls, text, cursorPos) {
+  // Accept single element or array
+  if (!Array.isArray(previewEls)) previewEls = [previewEls];
+
+  // Remove existing highlights
+  document.querySelectorAll('.cursor-highlight').forEach(function(el) {
+    var parent = el.parentNode;
+    while (el.firstChild) parent.insertBefore(el.firstChild, el);
+    parent.removeChild(el);
+    parent.normalize();
+  });
+
+  if (!text || cursorPos < 0) return;
+
+  // ── Step 1: Find the complete word at or near cursor ──
+  var wordStart = cursorPos;
+  while (wordStart > 0 && /[a-zA-Z0-9'-]/.test(text.charAt(wordStart - 1))) wordStart--;
+  var wordEnd = cursorPos;
+  while (wordEnd < text.length && /[a-zA-Z0-9'-]/.test(text.charAt(wordEnd))) wordEnd++;
+  var targetWord = text.substring(wordStart, wordEnd);
+
+  // If cursor is on whitespace, try the word just before cursor
+  if (!targetWord || targetWord.length < 2) {
+    var beforeCursor = text.substring(0, cursorPos);
+    var m = beforeCursor.match(/([a-zA-Z][a-zA-Z0-9'-]*)\s*$/);
+    if (m) { targetWord = m[1]; wordEnd = cursorPos; wordStart = wordEnd - targetWord.length; }
+  }
+  if (!targetWord || targetWord.length < 2) return;
+
+  // ── Step 2: Strip LaTeX to approximate rendered text ──
+  function stripLatex(s) {
+    s = s.replace(/\\begin\{[^}]*\}[\s\S]*?\\end\{[^}]*\}/g, '');
+    s = s.replace(/\\[a-zA-Z]+(\[[^\]]*\])?(\{[^}]*\})+/g, '');
+    s = s.replace(/\\[a-zA-Z]+\{[^}]*\}/g, '');
+    s = s.replace(/\\[a-zA-Z]+/g, '');
+    s = s.replace(/[{}$]/g, '');
+    return s;
+  }
+
+  // Count how many times targetWord appears in the text BEFORE cursor → Nth occurrence index
+  var beforeCursorText = text.substring(0, wordEnd);
+  var cleanBefore = stripLatex(beforeCursorText);
+  var wordsBefore = (cleanBefore.match(/[a-zA-Z][a-zA-Z0-9'-]*/g) || []);
+  var twLower = targetWord.toLowerCase();
+  // Count occurrences of targetWord that appear before the cursor position
+  var targetIdx = 0;
+  for (var wi = 0; wi < wordsBefore.length; wi++) {
+    if (wordsBefore[wi].toLowerCase() === twLower) targetIdx++;
+  }
+  // If the word at cursor is complete and matches, the count above includes it → index = count - 1
+  // If cursor is on whitespace after the word, count already includes it → index = count - 1
+  // If the last counted word is partial (still typing), it won't match → index = count (no subtraction needed)
+  if (wordsBefore.length > 0) {
+    var lastW = wordsBefore[wordsBefore.length - 1].toLowerCase();
+    if (lastW === twLower) {
+      targetIdx = targetIdx - 1; // the current word is included in count, so index = count - 1
+    }
+  }
+  if (targetIdx < 0) targetIdx = 0;
+
+  // ── Step 3: Find ALL occurrences across ALL preview elements ──
+  var escRe = function(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); };
+  var allWordsRe = new RegExp('\\b' + escRe(targetWord) + '\\b', 'gi');
+  var renderedMatches = [];
+  previewEls.forEach(function(el) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    var nd;
+    while (nd = walker.nextNode()) {
+      var ndText = nd.textContent;
+      var wm;
+      allWordsRe.lastIndex = 0;
+      while ((wm = allWordsRe.exec(ndText)) !== null) {
+        renderedMatches.push({ node: nd, index: wm.index, length: targetWord.length });
+      }
+    }
+  });
+  if (renderedMatches.length === 0) return;
+
+  // Pick the correct occurrence by global index; clamp to valid range
+  var pick = Math.min(targetIdx, renderedMatches.length - 1);
+  if (pick < 0) pick = 0;
+
+  var chosen = renderedMatches[pick];
+  var textNode = chosen.node;
+  var wordStart2 = chosen.index;
+
+  // ── Step 4: Wrap in highlight span ──
+  var before = textNode.textContent.substring(0, wordStart2);
+  var word = textNode.textContent.substring(wordStart2, wordStart2 + chosen.length);
+  var after = textNode.textContent.substring(wordStart2 + chosen.length);
+
+  var span = document.createElement('span');
+  span.className = 'cursor-highlight';
+  span.textContent = word;
+
+  var parent = textNode.parentNode;
+  if (before) parent.insertBefore(document.createTextNode(before), textNode);
+  parent.insertBefore(span, textNode);
+  if (after) {
+    textNode.textContent = after;
+  } else {
+    parent.removeChild(textNode);
+  }
+
+  // ── Step 5: Ensure highlighted word is visible in preview ──
+  var area = document.querySelector('.preview-area');
+  if (area) {
+    var spanRect = span.getBoundingClientRect();
+    var areaRect = area.getBoundingClientRect();
+    if (spanRect.top < areaRect.top + 40 || spanRect.bottom > areaRect.bottom - 40) {
+      var top = spanRect.top - areaRect.top + area.scrollTop - areaRect.height / 3;
+      area.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+  }
+}
+
+function syncPreviewToTab(tabName) {
+  var sync = document.getElementById('sync-preview');
+  if (sync && !sync.checked) return;
+  var area = document.querySelector('.preview-area');
+  if (!area) return;
+
+  if (tabName === 'meta' || tabName === 'figures' || tabName === 'tables') {
+    // Scroll to top of preview (title area)
+    area.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (tabName === 'sections') {
+    // Scroll to active section
+    if (activeSecId) syncPreviewToSection(activeSecId);
+  } else if (tabName === 'back') {
+    // Scroll to back matter
+    var bm = document.querySelector('[data-back-matter]');
+    if (bm) {
+      var top = bm.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 80;
+      area.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+  }
+}
+
+function createPageShell(hidden) {
+  var page = document.createElement('div');
+  page.className = 'page';
+  if (hidden) page.style.cssText = 'position:absolute;left:-10000px;top:0;visibility:hidden;';
+  page.innerHTML = '<div class="page-content"></div>';
+  return page;
+}
+
+function makeMeasuredBlock(html) {
+  var block = document.createElement('div');
+  block.className = 'page-block';
+  block.innerHTML = html;
+  return block;
+}
+
+function fitsPage(page) {
+  var content = page.querySelector('.page-content');
+  return content.scrollHeight <= PAGE_CONTENT_H + 1;
+}
+
+function splitElementAtTextOffset(leftEl, textOffset) {
+  var rightEl = leftEl.cloneNode(false);
+
+  function splitChildren(leftParent, rightParent, state) {
+    var children = Array.from(leftParent.childNodes);
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      if (state.done) {
+        rightParent.appendChild(child);
+        continue;
+      }
+      if (child.nodeType === 3) {
+        var len = child.textContent.length;
+        if (state.count > len) {
+          state.count -= len;
+        } else {
+          var rightText = child.splitText(Math.max(0, state.count));
+          rightParent.appendChild(rightText);
+          state.done = true;
+        }
+      } else if (child.nodeType === 1) {
+        var childLen = child.textContent.length;
+        if (state.count > childLen) {
+          state.count -= childLen;
+        } else {
+          var rightChild = child.cloneNode(false);
+          splitChildren(child, rightChild, state);
+          rightParent.appendChild(rightChild);
+          state.done = true;
+        }
+      }
+    }
+  }
+
+  splitChildren(leftEl, rightEl, { count: textOffset, done: false });
+  return {
+    left: leftEl.textContent.trim() ? leftEl : null,
+    right: rightEl.textContent.trim() ? rightEl : null
+  };
+}
+
+function findSafeTextBreak(text, offset) {
+  var min = Math.max(1, offset - 80);
+  var max = Math.min(text.length - 1, offset + 20);
+  for (var i = offset; i >= min; i--) {
+    if (/[\s,.;:!?，。；：！？、)\]\}]/.test(text.charAt(i))) return i + 1;
+  }
+  for (var j = offset + 1; j <= max; j++) {
+    if (/[\s,.;:!?，。；：！？、)\]\}]/.test(text.charAt(j))) return j + 1;
+  }
+  return offset;
+}
+
+function splitOversizeParagraph(page, block) {
+  var p = block.querySelector('p');
+  if (block.querySelectorAll('p').length !== 1) return null;
+  if (!p || p.textContent.length < 2) return null;
+
+  var original = block.cloneNode(true);
+  var content = page.querySelector('.page-content');
+  var index = Array.from(content.children).indexOf(block);
+  var textLen = p.textContent.length;
+  var low = 1;
+  var high = textLen - 1;
+  var best = 0;
+
+  while (low <= high) {
+    var mid = Math.floor((low + high) / 2);
+    var testBlock = original.cloneNode(true);
+    var testP = testBlock.querySelector('p');
+    splitElementAtTextOffset(testP, mid);
+    content.replaceChild(testBlock, content.children[index]);
+
+    if (fitsPage(page)) {
+      best = mid;
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  if (content.children[index]) content.replaceChild(block, content.children[index]);
+  best = findSafeTextBreak(p.textContent, best);
+  if (best < 8 || best >= textLen - 1) return null;
+
+  var leftBlock = original.cloneNode(true);
+  var rightBlock = original.cloneNode(true);
+  var leftSplit = splitElementAtTextOffset(leftBlock.querySelector('p'), best).left;
+  var rightSplit = splitElementAtTextOffset(rightBlock.querySelector('p'), best).right;
+  if (!leftSplit || !rightSplit) return null;
+
+  leftBlock.querySelector('p').replaceWith(leftSplit);
+  rightBlock.querySelector('p').replaceWith(rightSplit);
+  rightBlock.querySelector('p')?.classList.add('continued');
+  return { left: leftBlock, right: rightBlock };
+}
+
+function paginateBlocks(blocks) {
+  var host = document.createElement('div');
+  host.style.cssText = 'position:absolute;left:-10000px;top:0;visibility:hidden;';
+  document.body.appendChild(host);
+
+  var pages = [];
+  var page = createPageShell(true);
+  var content = page.querySelector('.page-content');
+  host.appendChild(page);
+
+  function finishPage(overflow) {
+    pages.push({ html: content.innerHTML, overflow: !!overflow });
+    host.removeChild(page);
+    page = createPageShell(true);
+    content = page.querySelector('.page-content');
+    host.appendChild(page);
+  }
+
+  var queue = blocks.map(function(b) { return b.html; }).filter(Boolean);
+  var guard = 0;
+  while (queue.length && guard++ < 2000) {
+    var block = makeMeasuredBlock(queue.shift());
+    content.appendChild(block);
+
+    if (fitsPage(page)) continue;
+
+    content.removeChild(block);
+    var hadContent = content.children.length > 0;
+
+    if (hadContent) {
+      content.appendChild(block);
+      var split = splitOversizeParagraph(page, block);
+      if (split && split.left && split.right) {
+        content.replaceChild(split.left, block);
+        finishPage(false);
+        queue.unshift(split.right.innerHTML);
+      } else {
+        content.removeChild(block);
+        finishPage(false);
+        queue.unshift(block.innerHTML);
+      }
+      continue;
+    }
+
+    content.appendChild(block);
+    var firstSplit = splitOversizeParagraph(page, block);
+    if (firstSplit && firstSplit.left && firstSplit.right) {
+      content.replaceChild(firstSplit.left, block);
+      finishPage(false);
+      queue.unshift(firstSplit.right.innerHTML);
+    } else {
+      finishPage(true);
+    }
+  }
+
+  if (content.children.length || pages.length === 0) pages.push({ html: content.innerHTML, overflow: false });
+  host.remove();
+  return pages;
+}
+
+function renderPreview() {
+  __blocks = [];
+  resetEqState();
+  resetFigState();
+  resetTblState();
+  var blocks = generateBlocks(data);
+  var wrapper = document.getElementById('page-wrapper');
+  var pages = paginateBlocks(blocks);
+
+  var out = '';
+  pages.forEach(function(pg, i) {
+    out += '<div class="page' + (pg.overflow ? ' page-overflow' : '') + '"><div class="page-content">' + pg.html + '</div><div class="page-num">' + (i+1) + '</div></div>';
+  });
+  wrapper.innerHTML = out;
+  document.getElementById('page-count').textContent = pages.length;
+  debouncedSave();
+}
+
+// ═══════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    // Sync preview to match the active tab
+    setTimeout(()=>syncPreviewToTab(btn.dataset.tab), 100);
+  });
+});
+
+// ═══════════════════════════════════════════════════
+//  META
+// ═══════════════════════════════════════════════════
+function bindMeta() {
+  const ti = document.getElementById('inp-title');
+  ti.value = data.title;
+  ti.oninput = () => { data.title = ti.value; renderPreview(); setTimeout(()=>syncPreviewFromInput(ti), 60); };
+  attachCursorSync(ti);
+
+  const ab = document.getElementById('inp-abstract');
+  ab.value = data.abstract;
+  ab.oninput = () => { data.abstract = ab.value; updateAbsCount(); renderPreview(); setTimeout(()=>syncPreviewFromInput(ab), 60); };
+  attachCursorSync(ab);
+
+  renderAuthors(); renderAffiliations(); renderKeywords(); renderNomenclature();
+
+  document.getElementById('btn-add-author').onclick = () => { data.authors.push({name:"New Author",affiliation:"inst1",email:"",corresponding:false,cofirst:false}); renderAuthors(); renderPreview(); };
+  document.getElementById('btn-add-affil').onclick = () => { const n=data.affiliations.length+1; data.affiliations.push({id:"inst"+n,text:"New Affiliation"}); renderAffiliations(); renderPreview(); };
+  document.getElementById('btn-add-kw').onclick = () => { data.keywords.push("new keyword"); renderKeywords(); renderPreview(); };
+  document.getElementById('btn-add-nom').onclick = () => { data.nomenclature.push({symbol:"",definition:""}); renderNomenclature(); renderPreview(); };
+}
+
+function attachCursorSync(el) {
+  el.addEventListener('keyup', function() { syncPreviewFromInput(el); });
+  el.addEventListener('mouseup', function() { setTimeout(function(){ syncPreviewFromInput(el); }, 30); });
+  el.addEventListener('click', function() { setTimeout(function(){ syncPreviewFromInput(el); }, 30); });
+}
+
+function updateAbsCount() {
+  const w = data.abstract.trim().split(/\s+/).filter(Boolean).length;
+  const el = document.getElementById('abs-wordcount');
+  el.textContent = w + ' words' + (w < 150 ? ' (min 150)' : w > 250 ? ' (max 250)' : ' \u2713');
+  el.style.color = (w >= 150 && w <= 250) ? '#22c55e' : '#f59e0b';
+}
+
+function renderAuthors() {
+  const c = document.getElementById('authors-box'); c.innerHTML = '';
+  data.authors.forEach((a,i) => {
+    if (a.email === undefined) a.email = '';
+    if (a.cofirst === undefined) a.cofirst = false;
+    const r = document.createElement('div'); r.className = 'author-card';
+    const isFirst = i === 0, isLast = i === data.authors.length - 1;
+    r.innerHTML = `<div class="author-grid">
+      <span style="font-size:11px;color:#94a3b8;text-align:center">${i+1}</span>
+      <input class="inp" value="${escA(a.name)}" placeholder="Name" data-f="name" data-i="${i}"/>
+      <input class="inp" value="${escA(a.affiliation)}" placeholder="Inst" data-f="affiliation" data-i="${i}"/>
+      <input class="inp" value="${escA(a.email)}" placeholder="Email" data-f="email" data-i="${i}"/>
+      <div class="author-actions">
+        <button class="icon-btn arrow-btn" data-up="${i}" style="opacity:${isFirst?'0.3':'1'}" ${isFirst?'disabled':''}>&#9650;</button>
+        <button class="icon-btn arrow-btn" data-down="${i}" style="opacity:${isLast?'0.3':'1'}" ${isLast?'disabled':''}>&#9660;</button>
+        <button class="icon-btn" data-rm="${i}">\u2715</button>
+      </div>
+      <div class="author-flags">
+      <label class="corr-label" title="Corresponding author"><input type="checkbox" ${a.corresponding?'checked':''} data-f="corresponding" data-i="${i}"/>Corr</label>
+      <label class="corr-label" title="Co-first author"><input type="checkbox" ${a.cofirst?'checked':''} data-f="cofirst" data-i="${i}"/>Co-1st</label>
+      </div>
+    </div>`;
+    r.querySelectorAll('input').forEach(inp => { inp.oninput = () => { const idx=+inp.dataset.i,f=inp.dataset.f; data.authors[idx][f] = (f==='corresponding'||f==='cofirst')?inp.checked:inp.value; renderPreview(); }; });
+    const upBtn = r.querySelector('[data-up]');
+    const downBtn = r.querySelector('[data-down]');
+    if (upBtn && !isFirst) upBtn.onclick = () => { [data.authors[i-1], data.authors[i]] = [data.authors[i], data.authors[i-1]]; renderAuthors(); renderPreview(); };
+    if (downBtn && !isLast) downBtn.onclick = () => { [data.authors[i+1], data.authors[i]] = [data.authors[i], data.authors[i+1]]; renderAuthors(); renderPreview(); };
+    r.querySelector('[data-rm]').onclick = () => { data.authors.splice(i,1); renderAuthors(); renderPreview(); };
+    c.appendChild(r);
+  });
+}
+
+function renderAffiliations() {
+  const c = document.getElementById('affil-box'); c.innerHTML = '';
+  data.affiliations.forEach((a,i) => {
+    const r = document.createElement('div'); r.className = 'author-row';
+    r.innerHTML = `<input class="inp" value="${escA(a.id)}" placeholder="ID" style="width:55px;flex:none" data-f="id" data-i="${i}"/>
+      <input class="inp" value="${escA(a.text)}" placeholder="Affiliation" data-f="text" data-i="${i}"/>`;
+    r.querySelectorAll('input').forEach(inp => { inp.oninput = () => { data.affiliations[+inp.dataset.i][inp.dataset.f] = inp.value; renderPreview(); }; });
+    c.appendChild(r);
+  });
+}
+
+function renderKeywords() {
+  const c = document.getElementById('kw-box'); c.innerHTML = '';
+  data.keywords.forEach((k,i) => {
+    const r = document.createElement('div'); r.className = 'kw-row';
+    r.innerHTML = '<span style="font-size:11px;color:#94a3b8;width:16px;text-align:center">' + (i+1) + '</span>' +
+      '<input class="inp" value="' + escA(k) + '" placeholder="Keyword" data-i="' + i + '"/>' +
+      '<button class="icon-btn" data-rm="' + i + '">\u2715</button>';
+    r.querySelector('input').oninput = (e) => { data.keywords[+e.target.dataset.i] = e.target.value; renderPreview(); };
+    r.querySelector('[data-rm]').onclick = () => { data.keywords.splice(i,1); renderKeywords(); renderPreview(); };
+    c.appendChild(r);
+  });
+}
+
+function renderNomenclature() {
+  const c = document.getElementById('nom-box'); c.innerHTML = '';
+  data.nomenclature.forEach((n,i) => {
+    const r = document.createElement('div'); r.className = 'author-row';
+    r.innerHTML = `<input class="inp" value="${escA(n.symbol)}" placeholder="$symbol$" style="width:80px;flex:none" data-f="symbol" data-i="${i}"/>
+      <input class="inp" value="${escA(n.definition)}" placeholder="Definition" data-f="definition" data-i="${i}"/>
+      <button class="icon-btn" data-rm="${i}">\u2715</button>`;
+    r.querySelectorAll('input').forEach(inp => { inp.oninput = () => { data.nomenclature[+inp.dataset.i][inp.dataset.f] = inp.value; renderPreview(); }; });
+    r.querySelector('[data-rm]').onclick = () => { data.nomenclature.splice(i,1); renderNomenclature(); renderPreview(); };
+    c.appendChild(r);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  HIGHLIGHTS
+// ═══════════════════════════════════════════════════
+function renderHighlights() {
+  const c = document.getElementById('hl-box'); if (!c) return; c.innerHTML = '';
+  data.highlights.forEach((h,i) => {
+    const r = document.createElement('div'); r.style.marginBottom = '6px';
+    const len = h.length;
+    const over = len > 85;
+    r.innerHTML = `<div style="display:flex;gap:5px;align-items:start">
+      <span style="font-size:11px;color:#94a3b8;margin-top:6px;flex-shrink:0">${i+1}.</span>
+      <input class="inp" value="${escA(h)}" style="flex:1" data-i="${i}"/>
+      <button class="icon-btn" data-rm="${i}">\u2715</button>
+    </div>
+    <div class="hl-char-count">${len}/85${over?' <span class="hl-over">OVER</span>':''}</div>`;
+    r.querySelector('input').oninput = (e) => { data.highlights[i] = e.target.value; renderHighlights(); renderPreview(); };
+    r.querySelector('[data-rm]').onclick = () => { data.highlights.splice(i,1); renderHighlights(); renderPreview(); };
+    c.appendChild(r);
+  });
+}
+if (document.getElementById('btn-add-hl')) document.getElementById('btn-add-hl').onclick = () => { data.highlights.push(""); renderHighlights(); renderPreview(); };
+
+// ═══════════════════════════════════════════════════
+//  FIGURES
+// ═══════════════════════════════════════════════════
+let figCounter = 0;
+let figLabels = {};
+
+function resetFigState() { figCounter = 0; figLabels = {}; }
+
+// Ensure data.figures exists
+if (!data.figures) data.figures = [];
+
+function addFigure(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const id = 'fig' + (data.figures.length + 1);
+    data.figures.push({
+      id: id,
+      name: file.name,
+      caption: 'Figure caption for ' + file.name,
+      base64: e.target.result,
+    });
+    renderFigList();
+    renderPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderFigList() {
+  const c = document.getElementById('fig-list');
+  c.innerHTML = '';
+  data.figures.forEach((f, i) => {
+    if (!f.width) f.width = 80;
+    const card = document.createElement('div');
+    card.className = 'fig-card';
+    card.innerHTML = `
+      <div style="display:flex;gap:8px;align-items:start">
+        ${f.base64 ? '<img class="fig-thumb" style="width:80px;height:60px;flex-shrink:0;object-fit:contain" src="'+f.base64+'" />' : ''}
+        <div style="flex:1;min-width:0">
+          <div class="fig-id" style="display:flex;justify-content:space-between;align-items:center">
+            <span>{${esc(f.id)}}</span>
+            <span style="font-weight:400;color:#94a3b8;font-size:10px">${esc(f.name)}</span>
+          </div>
+          <div class="fl" style="margin-top:4px">Caption</div>
+          <input class="inp fig-cap-inp" value="${escA(f.caption)}" data-i="${i}" style="font-size:12px" />
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+        <span style="font-size:10px;color:#94a3b8;flex-shrink:0">Width:</span>
+        <input type="range" class="fig-width-slider" min="30" max="100" value="${f.width}" data-i="${i}" style="flex:1;accent-color:#2563eb" />
+        <span class="fig-width-val" style="font-size:11px;color:#475569;width:32px;text-align:right">${f.width}%</span>
+      </div>
+      <div style="display:flex;gap:4px;margin-top:8px">
+        <button class="btn fig-insert-btn" data-i="${i}" style="font-size:10px;padding:3px 8px;background:#2563eb;color:#fff;border:none;flex:1">Insert Code</button>
+        <button class="btn fig-replace-btn" data-i="${i}" style="font-size:10px;padding:3px 8px">Replace</button>
+        <button class="icon-btn fig-rm-btn" data-i="${i}">\u2715</button>
+      </div>
+    `;
+    card.querySelector('.fig-cap-inp').oninput = (e) => {
+      data.figures[i].caption = e.target.value;
+      renderPreview();
+    };
+    card.querySelector('.fig-width-slider').oninput = (e) => {
+      data.figures[i].width = +e.target.value;
+      card.querySelector('.fig-width-val').textContent = e.target.value + '%';
+      renderPreview();
+    };
+    card.querySelector('.fig-insert-btn').onclick = () => {
+      const w = (f.width / 100).toFixed(1).replace(/\.0$/, '');
+      const code = '\\begin{figure}[htbp]\n\\centering\n\\includegraphics[width=' + w + '\\textwidth]{' + f.id + '}\n\\caption{' + f.caption + '}\n\\label{fig:' + f.id + '}\n\\end{figure}';
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = card.querySelector('.fig-insert-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Insert Code'; }, 1500);
+      }).catch(() => {
+        prompt('Copy this LaTeX code:', code);
+      });
+    };
+    card.querySelector('.fig-replace-btn').onclick = () => {
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = 'image/*';
+      inp.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          data.figures[i].base64 = ev.target.result;
+          data.figures[i].name = file.name;
+          renderFigList(); renderPreview();
+        };
+        reader.readAsDataURL(file);
+      };
+      inp.click();
+    };
+    card.querySelector('.fig-rm-btn').onclick = () => {
+      data.figures.splice(i, 1);
+      renderFigList(); renderPreview();
+    };
+    c.appendChild(card);
+  });
+}
+
+// Drag & drop
+const dropZone = document.getElementById('fig-drop-zone');
+const figFileInput = document.getElementById('fig-file-input');
+dropZone.addEventListener('click', () => figFileInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = '#2563eb'; dropZone.style.background = '#eff6ff'; });
+dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = '#cbd5e1'; dropZone.style.background = ''; });
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.style.borderColor = '#cbd5e1'; dropZone.style.background = '';
+  Array.from(e.dataTransfer.files).forEach(f => { if (f.type.startsWith('image/')) addFigure(f); });
+});
+figFileInput.addEventListener('change', (e) => {
+  Array.from(e.target.files).forEach(f => addFigure(f));
+  e.target.value = '';
+});
+
+// ═══════════════════════════════════════════════════
+//  TABLES (Three-line / booktabs)
+// ═══════════════════════════════════════════════════
+let tblCounter = 0;
+let tblLabels = {};
+
+function resetTblState() { tblCounter = 0; tblLabels = {}; }
+
+if (!data.tables) data.tables = [];
+
+function addTable() {
+  const n = data.tables.length + 1;
+  data.tables.push({
+    id: 'table' + n,
+    cols: 3,
+    rows: 3,
+    colFormats: [],
+    headerRow: 0,
+    cells: [
+      ['Header 1', 'Header 2', 'Header 3'],
+      ['', '', ''],
+      ['', '', ''],
+    ],
+    caption: '',
+    label: '',
+    note: '',
+    placement: 'htbp',
+  });
+  renderTblList();
+}
+
+function renderTblList() {
+  const c = document.getElementById('tbl-list');
+  c.innerHTML = '';
+  data.tables.forEach((tbl, i) => {
+    const card = document.createElement('div');
+    card.className = 'tbl-card';
+
+    let rowsHtml = '';
+    for (let r = 0; r < tbl.rows; r++) {
+      const isHeader = (r <= tbl.headerRow);
+      rowsHtml += '<tr>';
+      rowsHtml += '<td class="row-num">' + (r + 1) + '</td>';
+      for (let ci = 0; ci < tbl.cols; ci++) {
+        const val = (tbl.cells[r] && tbl.cells[r][ci]) ? tbl.cells[r][ci] : '';
+        if (isHeader) {
+          rowsHtml += '<th><input value="' + escA(val) + '" data-r="' + r + '" data-c="' + ci + '" placeholder="Col ' + (ci+1) + '"/></th>';
+        } else {
+          rowsHtml += '<td><input value="' + escA(val) + '" data-r="' + r + '" data-c="' + ci + '"/></td>';
+        }
+      }
+      rowsHtml += '<td class="row-num" style="cursor:pointer;color:#ef4444;font-size:11px" data-rmrow="' + r + '" title="Delete row">\u2715</td>';
+      rowsHtml += '</tr>';
+    }
+
+    card.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+      '<span class="tbl-id">{' + esc(tbl.id) + '}</span>' +
+      '<button class="icon-btn tbl-rm-btn" data-i="' + i + '">\u2715</button>' +
+    '</div>' +
+    '<div class="tbl-grid-wrap"><table class="tbl-grid">' +
+      '<tr><td class="row-num"></td>' + Array.from({length:tbl.cols},(_,ci)=>'<th style="background:#e2e8f0;font-size:9px;color:#64748b;text-align:center;padding:2px 0">' + (ci+1) + '</th>').join('') + '<td class="row-num"></td></tr>' +
+      rowsHtml +
+    '</table></div>' +
+    '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">' +
+      '<button class="btn tbl-add-row" data-i="' + i + '" style="font-size:10px;padding:2px 8px">+ Row</button>' +
+      '<button class="btn tbl-add-col" data-i="' + i + '" style="font-size:10px;padding:2px 8px">+ Col</button>' +
+      '<button class="btn tbl-rm-col" data-i="' + i + '" style="font-size:10px;padding:2px 8px">- Col</button>' +
+      '<span style="font-size:10px;color:#94a3b8;display:flex;align-items:center;gap:3px">' +
+        'Header rows: <input type="number" class="tbl-hdr-count" min="0" max="' + tbl.rows + '" value="' + (tbl.headerRow + 1) + '" data-i="' + i + '" style="width:36px;padding:1px 4px;border:1px solid #d1d5db;border-radius:3px;font-size:10px;text-align:center"/>' +
+      '</span>' +
+    '</div>' +
+    '<div class="fl" style="margin-top:4px">Caption</div>' +
+    '<input class="inp tbl-cap-inp" value="' + escA(tbl.caption) + '" data-i="' + i + '" placeholder="Table caption" style="font-size:12px"/>' +
+    '<div class="fl" style="margin-top:4px">Label <span class="hint">\\ref{...}</span></div>' +
+    '<input class="inp tbl-lbl-inp" value="' + escA(tbl.label) + '" data-i="' + i + '" placeholder="e.g. table:results" style="font-size:12px;font-family:monospace"/>' +
+    '<div class="fl" style="margin-top:4px">Table Note <span class="hint">optional footnote</span></div>' +
+    '<input class="inp tbl-note-inp" value="' + escA(tbl.note) + '" data-i="' + i + '" placeholder="Note: ..." style="font-size:12px"/>' +
+    '<div class="fl" style="margin-top:4px">Placement</div>' +
+    '<select class="inp tbl-place-sel" data-i="' + i + '" style="font-size:12px;padding:4px 6px">' +
+      '<option value="htbp"' + (tbl.placement==='htbp'?' selected':'') + '>htbp (here/top/bottom/page)</option>' +
+      '<option value="H"' + (tbl.placement==='H'?' selected':'') + '>H (force here)</option>' +
+      '<option value="t"' + (tbl.placement==='t'?' selected':'') + '>t (top)</option>' +
+      '<option value="b"' + (tbl.placement==='b'?' selected':'') + '>b (bottom)</option>' +
+    '</select>' +
+    '<div style="display:flex;gap:4px;margin-top:8px">' +
+      '<button class="btn tbl-insert-btn" data-i="' + i + '" style="font-size:10px;padding:3px 8px;background:#2563eb;color:#fff;border:none;flex:1">Insert Code</button>' +
+    '</div>';
+
+    // Bind cell inputs
+    card.querySelectorAll('.tbl-grid input').forEach(inp => {
+      inp.oninput = () => {
+        const r = +inp.dataset.r, ci = +inp.dataset.c;
+        if (!data.tables[i].cells[r]) data.tables[i].cells[r] = [];
+        data.tables[i].cells[r][ci] = inp.value;
+      };
+    });
+
+    // Remove row
+    card.querySelectorAll('[data-rmrow]').forEach(btn => {
+      btn.onclick = () => {
+        const r = +btn.dataset.rmrow;
+        if (data.tables[i].rows <= 1) return;
+        data.tables[i].cells.splice(r, 1);
+        data.tables[i].rows--;
+        if (data.tables[i].headerRow >= data.tables[i].rows) data.tables[i].headerRow = data.tables[i].rows - 1;
+        renderTblList();
+      };
+    });
+
+    // Caption
+    card.querySelector('.tbl-cap-inp').oninput = (e) => { data.tables[i].caption = e.target.value; };
+    card.querySelector('.tbl-lbl-inp').oninput = (e) => { data.tables[i].label = e.target.value; };
+    card.querySelector('.tbl-note-inp').oninput = (e) => { data.tables[i].note = e.target.value; };
+    card.querySelector('.tbl-place-sel').onchange = (e) => { data.tables[i].placement = e.target.value; };
+
+    // Header row count
+    card.querySelector('.tbl-hdr-count').onchange = (e) => {
+      data.tables[i].headerRow = Math.max(0, Math.min((+e.target.value || 1) - 1, data.tables[i].rows - 1));
+      renderTblList();
+    };
+
+    // Add/remove rows and columns
+    card.querySelector('.tbl-add-row').onclick = () => {
+      data.tables[i].cells.push(new Array(data.tables[i].cols).fill(''));
+      data.tables[i].rows++;
+      renderTblList();
+    };
+    card.querySelector('.tbl-add-col').onclick = () => {
+      data.tables[i].cols++;
+      data.tables[i].cells.forEach(row => { row.push(''); });
+      renderTblList();
+    };
+    card.querySelector('.tbl-rm-col').onclick = () => {
+      if (data.tables[i].cols <= 1) return;
+      data.tables[i].cols--;
+      data.tables[i].cells.forEach(row => { row.pop(); });
+      renderTblList();
+    };
+
+    // Insert LaTeX code
+    card.querySelector('.tbl-insert-btn').onclick = () => {
+      const code = generateTableLatex(data.tables[i]);
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = card.querySelector('.tbl-insert-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Insert Code'; }, 1500);
+      }).catch(() => { prompt('Copy this LaTeX code:', code); });
+    };
+
+    // Remove table
+    card.querySelector('.tbl-rm-btn').onclick = () => {
+      data.tables.splice(i, 1);
+      renderTblList(); renderPreview();
+    };
+
+    c.appendChild(card);
+  });
+}
+
+function generateTableLatex(tbl) {
+  const colFmt = tbl.cols > 0 ? 'l' + 'c'.repeat(tbl.cols - 1) : 'l';
+  let code = '\\begin{table}[' + tbl.placement + ']\n';
+  code += '\\centering\n';
+  if (tbl.caption) code += '\\caption{' + tbl.caption + '}\n';
+  if (tbl.label) code += '\\label{' + tbl.label + '}\n';
+  code += '\\begin{tabular}{' + colFmt + '}\n';
+  code += '\\toprule\n';
+
+  for (let r = 0; r < tbl.rows; r++) {
+    const cells = (tbl.cells[r] || []).map(c => c || '').join(' & ');
+    code += cells + ' \\\\\n';
+    if (r === tbl.headerRow) {
+      code += '\\midrule\n';
+    }
+  }
+  code += '\\bottomrule\n';
+  code += '\\end{tabular}\n';
+  if (tbl.note) code += '\\begin{tablenotes}\n\\small\n\\item ' + tbl.note + '\n\\end{tablenotes}\n';
+  code += '\\end{table}';
+  return code;
+}
+
+// Parse LaTeX \begin{table}...\end{table} in section text for preview
+function processTables(text) {
+  const re = /\\begin\{table\*?\}(?:\[[^\]]*\])?([\s\S]*?)\\end\{table\*?\}/g;
+  text = text.replace(re, (_, body) => {
+    tblCounter++;
+    const num = tblCounter;
+
+    // Extract label
+    const lblMatch = body.match(/\\label\{([^}]+)\}/);
+    if (lblMatch) tblLabels[lblMatch[1]] = num;
+
+    // Extract caption
+    let caption = '';
+    const capMatch = body.match(/\\caption\{([\s\S]*?)\}/);
+    if (capMatch) caption = capMatch[1];
+
+    // Extract table notes
+    let note = '';
+    const noteMatch = body.match(/\\begin\{tablenotes\}([\s\S]*?)\\end\{tablenotes\}/);
+    if (noteMatch) {
+      note = noteMatch[1].replace(/\\small/g, '').replace(/\\item\s*/g, '').trim();
+    }
+
+    // Extract tabular content
+    const tabMatch = body.match(/\\begin\{tabular\}\{([^}]*)\}([\s\S]*?)\\end\{tabular\}/);
+    if (!tabMatch) {
+      return storeBlock('<div class="table-block"><div class="tbl-caption"><b>Table ' + num + '.</b> ' + esc(caption) + '</div><i style="color:#999">[table]</i></div>');
+    }
+
+    const colFmt = tabMatch[1];
+    const tabBody = tabMatch[2];
+
+    // Parse column alignments
+    const colAligns = [];
+    for (const ch of colFmt) {
+      if (ch === 'l') colAligns.push('left');
+      else if (ch === 'c') colAligns.push('center');
+      else if (ch === 'r') colAligns.push('right');
+      // skip | @ {} etc.
+    }
+
+    // Split into rows by \\
+    const rawRows = tabBody.split(/\\\\/).map(r => r.trim()).filter(r => {
+      const cleaned = r.replace(/\\(toprule|midrule|bottomrule|cmidrule(\([^)]*\))?(\{[^}]*\})?)/g, '').trim();
+      return cleaned.length > 0;
+    });
+
+    // Parse rows and determine header/body split
+    const parsedRows = rawRows.map(row => {
+      const cleaned = row.replace(/\\(toprule|midrule|bottomrule|cmidrule(\([^)]*\))?(\{[^}]*\})?)/g, '').trim();
+      return cleaned.split('&').map(cell => cell.trim());
+    });
+
+    // Detect header: rows before \midrule
+    let headerCount = 1; // default: first row is header
+    let idx = 0;
+    const bodyLower = tabBody.toLowerCase();
+    const midIdx = bodyLower.indexOf('\\midrule');
+    if (midIdx >= 0) {
+      // Count rows before \midrule
+      const beforeMid = tabBody.substring(0, midIdx);
+      headerCount = beforeMid.split(/\\\\/).map(r => r.replace(/\\(toprule|cmidrule(\([^)]*\))?(\{[^}]*\})?)/g, '').trim()).filter(r => r.length > 0).length;
+      if (headerCount === 0) headerCount = 1;
+    }
+
+    // Build three-line table HTML
+    let html = '<div class="table-block">';
+    if (caption) html += '<div class="tbl-caption"><b>Table ' + num + '.</b> ' + esc(caption) + '</div>';
+    html += '<table class="table-three-line"><thead>';
+
+    parsedRows.forEach((cells, ri) => {
+      if (ri < headerCount) {
+        html += '<tr>';
+        cells.forEach((cell, ci) => {
+          const align = colAligns[ci] || 'center';
+          const cls = align === 'left' ? ' class="col-left"' : '';
+          html += '<th' + cls + '>' + renderMath(esc(cell)) + '</th>';
+        });
+        html += '</tr>';
+      }
+    });
+    html += '</thead><tbody>';
+    parsedRows.forEach((cells, ri) => {
+      if (ri >= headerCount) {
+        html += '<tr>';
+        cells.forEach((cell, ci) => {
+          const align = colAligns[ci] || 'center';
+          const cls = align === 'left' ? ' class="col-left"' : '';
+          html += '<td' + cls + '>' + renderMath(esc(cell)) + '</td>';
+        });
+        html += '</tr>';
+      }
+    });
+    html += '</tbody></table>';
+    if (note) html += '<div class="tbl-note">' + esc(note) + '</div>';
+    html += '</div>';
+    return storeBlock(html);
+  });
+  return text;
+}
+
+document.getElementById('btn-add-table').onclick = () => { addTable(); renderPreview(); };
+
+// ═══════════════════════════════════════════════════
+//  SECTIONS
+// ═══════════════════════════════════════════════════
+function renderSecList() {
+  const c = document.getElementById('sec-list'); c.innerHTML = '';
+  data.sections.forEach(s => {
+    const d = document.createElement('div'); d.style.cssText = 'display:flex;align-items:center;gap:3px';
+    d.innerHTML = `<button class="sec-btn ${s.id===activeSecId?'active':''}" data-id="${s.id}">${esc(s.title||'Untitled')}</button>
+      <button class="icon-btn" data-rm="${s.id}">\u2715</button>`;
+    d.querySelector('.sec-btn').onclick = () => { activeSecId = s.id; _lastSyncPidx = -1; _lastSyncSec = ''; renderSecList(); showSecEditor(); renderPreview(); setTimeout(()=>syncPreviewToCursor(), 100); };
+    d.querySelector('[data-rm]').onclick = () => {
+      const idx = data.sections.findIndex(x=>x.id===s.id);
+      data.sections.splice(idx,1);
+      if (activeSecId===s.id) activeSecId = data.sections[0]?.id||"";
+      renderSecList(); showSecEditor(); renderPreview();
+    };
+    c.appendChild(d);
+  });
+}
+
+function showSecEditor() {
+  const sec = data.sections.find(s=>s.id===activeSecId);
+  const ed = document.getElementById('sec-editor'), dv = document.getElementById('sec-divider');
+  if (!sec) { ed.style.display='none'; dv.style.display='none'; return; }
+  ed.style.display='block'; dv.style.display='block';
+  const ti = document.getElementById('inp-sec-title'), co = document.getElementById('inp-sec-content');
+  ti.value = sec.title; co.value = sec.content;
+  ti.oninput = () => { sec.title = ti.value; renderSecList(); renderPreview(); setTimeout(()=>syncPreviewToSection(sec.id), 80); };
+  co.oninput = () => { sec.content = co.value; updateSecWordCount(); renderPreview(); setTimeout(()=>syncPreviewToCursor(), 100); };
+  // Track cursor position changes for live preview sync
+  co.onkeyup = () => { syncPreviewToCursor(); };
+  co.onmouseup = () => { setTimeout(()=>syncPreviewToCursor(), 30); };
+  co.onclick = () => { setTimeout(()=>syncPreviewToCursor(), 30); };
+  // Re-apply highlight when textarea scrolls (prevent highlight disappearing)
+  var _scrollTimer = null;
+  co.onscroll = () => {
+    clearTimeout(_scrollTimer);
+    _scrollTimer = setTimeout(() => {
+      var sync = document.getElementById('sync-preview');
+      if (sync && !sync.checked) return;
+      var s = data.sections.find(function(x){ return x.id === activeSecId; });
+      if (!s) return;
+      var bodies = document.querySelectorAll('.p-body[data-sec-id="' + CSS.escape(s.id) + '"]');
+      if (bodies.length === 0) return;
+      highlightWordInElement(Array.from(bodies), co.value, co.selectionStart);
+    }, 60);
+  };
+  updateSecWordCount();
+  bindContentToolbar(co);
+}
+
+function updateSecWordCount() {
+  const co = document.getElementById('inp-sec-content');
+  if (!co) return;
+  const text = co.value;
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const chars = text.length;
+  const paras = text.split(/\n\s*\n/).filter(p => p.trim()).length;
+  const wcEl = document.getElementById('sec-wordcount');
+  const ccEl = document.getElementById('sec-charcount');
+  if (wcEl) wcEl.textContent = words + ' words  |  ' + paras + ' paragraphs';
+  if (ccEl) ccEl.textContent = chars + ' chars';
+}
+
+// LaTeX snippet templates for toolbar
+const TOOLBAR_SNIPPETS = {
+  bold:       { before: '\\textbf{', after: '}' },
+  italic:     { before: '\\textit{', after: '}' },
+  emph:       { before: '\\emph{', after: '}' },
+  indent:     { before: '\\indenttwo{', after: '}' },
+  cite:       { before: '\\cite{', after: '}' },
+  ref:        { before: '\\ref{', after: '}' },
+  label:      { before: '\\label{', after: '}' },
+  subsection: { before: '\n\\subsection{1.1 ', after: '}\n' },
+  equation:   { before: '\n\\begin{equation}\n  ', after: '\n  \\label{eq:}\n\\end{equation}\n' },
+  align:      { before: '\n\\begin{align}\n  ', after: ' &= \\\\\n  &=\n\\end{align}\n' },
+  math:       { before: '$', after: '$' },
+  dmath:      { before: '$$', after: '$$' },
+  figure:     { before: '\n\\begin{figure}[htbp]\n\\centering\n\\includegraphics[width=0.8\\textwidth]{', after: '}\n\\caption{}\n\\label{fig:}\n\\end{figure}\n' },
+  table:      { before: '\n\\begin{table}[htbp]\n\\centering\n\\caption{}\n\\label{tab:}\n\\begin{tabular}{lcc}\n\\toprule\n', after: ' \\\\\n\\midrule\n \\\\\n\\bottomrule\n\\end{tabular}\n\\end{table}\n' },
+  si:         { before: '\\SI{', after: '}{}' },
+  todo:       { before: '\\todo{', after: '}' },
+};
+
+function bindContentToolbar(textarea) {
+  var toolbar = document.getElementById("content-toolbar");
+  if (!toolbar) return;
+  toolbar.querySelectorAll(".tb-btn").forEach(function(btn) {
+    btn.onclick = function(e) {
+      e.preventDefault();
+      var key = btn.dataset.ins;
+      var snip = TOOLBAR_SNIPPETS[key];
+      if (!snip) return;
+      insertSnippet(textarea, snip);
+    };
+  });
+}
+
+function insertSnippet(ta, snip) {
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const selected = ta.value.substring(start, end);
+  const before = snip.before;
+  const after = snip.after;
+  const insert = before + selected + after;
+
+  ta.focus();
+  // Use execCommand for undo support where possible, fallback to direct manipulation
+  ta.value = ta.value.substring(0, start) + insert + ta.value.substring(end);
+
+  // Position cursor: if text was selected, place after; otherwise place inside the snippet
+  if (selected) {
+    ta.selectionStart = ta.selectionEnd = start + insert.length;
+  } else {
+    ta.selectionStart = ta.selectionEnd = start + before.length;
+  }
+
+  // Trigger input event so content updates
+  ta.dispatchEvent(new Event('input'));
+}
+
+document.getElementById('btn-add-sec').onclick = () => {
+  const n = data.sections.length+1, id = 'sec_'+Date.now();
+  data.sections.push({id, title: n+'. New Section', content:''});
+  activeSecId = id; renderSecList(); showSecEditor(); renderPreview();
+};
+
+// ═══════════════════════════════════════════════════
+//  BACK MATTER
+// ═══════════════════════════════════════════════════
+function bindBack() {
+  const cr = document.getElementById('inp-credit'); cr.value = data.credit; cr.oninput = () => { data.credit = cr.value; renderPreview(); setTimeout(()=>syncPreviewFromInput(cr), 60); }; attachCursorSync(cr);
+  const dc = document.getElementById('inp-decl'); dc.value = data.declaration; dc.oninput = () => { data.declaration = dc.value; renderPreview(); setTimeout(()=>syncPreviewFromInput(dc), 60); }; attachCursorSync(dc);
+  const da = document.getElementById('inp-data'); da.value = data.dataAvailability; da.oninput = () => { data.dataAvailability = da.value; renderPreview(); setTimeout(()=>syncPreviewFromInput(da), 60); }; attachCursorSync(da);
+  const ak = document.getElementById('inp-ack'); ak.value = data.acknowledgements; ak.oninput = () => { data.acknowledgements = ak.value; renderPreview(); setTimeout(()=>syncPreviewFromInput(ak), 60); }; attachCursorSync(ak);
+}
+
+// ═══════════════════════════════════════════════════
+//  EXPORT / IMPORT / RESET
+// ═══════════════════════════════════════════════════
+document.getElementById('btn-export').onclick = () => {
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'paper_data_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+};
+
+document.getElementById('btn-import').onclick = () => document.getElementById('file-import').click();
+
+document.getElementById('file-import').onchange = (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = (ev) => {
+    try {
+      const imp = JSON.parse(ev.target.result);
+      Object.keys(imp).forEach(k => data[k] = imp[k]);
+      saveData(); refreshAll();
+      document.getElementById('save-status').textContent = 'Imported';
+    } catch(err) { alert('Invalid JSON: '+err.message); }
+  };
+  r.readAsText(f); e.target.value = '';
+};
+
+document.getElementById('btn-reset').onclick = () => {
+  if (!confirm('Reset all content to default?')) return;
+  const fresh = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  Object.keys(fresh).forEach(k => data[k] = fresh[k]);
+  activeSecId = data.sections[0]?.id||"";
+  saveData(); refreshAll();
+  document.getElementById('save-status').textContent = 'Reset';
+};
+
+function refreshAll() {
+  document.getElementById('inp-title').value = data.title;
+  document.getElementById('inp-abstract').value = data.abstract;
+  renderAuthors(); renderAffiliations(); renderKeywords(); renderNomenclature();
+  renderHighlights(); renderFigList(); renderTblList(); renderSecList(); showSecEditor();
+  document.getElementById('inp-credit').value = data.credit;
+  document.getElementById('inp-decl').value = data.declaration;
+  document.getElementById('inp-data').value = data.dataAvailability;
+  document.getElementById('inp-ack').value = data.acknowledgements;
+  updateAbsCount(); renderPreview();
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+bindMeta();
+bindBack();
+renderHighlights();
+renderFigList();
+renderTblList();
+renderSecList();
+showSecEditor();
+updateAbsCount();
+renderPreview();
+</script>
+</body>
+</html>
