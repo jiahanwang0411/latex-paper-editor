@@ -23,7 +23,7 @@ AI 生成初稿 → JSON 导入编辑器 → 选择期刊模板自动排版 → 
 
 **双栏实时预览** — 左侧结构化编辑面板 + 右侧 A4 比例分页预览，内容自动分页，段落跨页智能断行，KaTeX 数学公式实时渲染。
 
-**12 种期刊模板** — 支持 Elsevier（elsarticle、Solar Energy、J. Power Sources、Applied Energy）、Wiley（Standard、Adv. Mater.、Angew. Chem.、Adv. Energy Mater.）、ACS（Standard、JACS、ACS Nano、ACS Energy Lett.），每种模板的字体、章节编号、摘要样式均按对应期刊 LaTeX 模板风格渲染，编辑器内随时切换。
+**12 种期刊模板** — 支持 Elsevier（elsarticle、Applied Energy、Solar Energy、J. Power Sources）、Wiley（Standard、Adv. Mater.、Angew. Chem.、Adv. Energy Mater.）、ACS（Standard、JACS、ACS Nano、ACS Energy Lett.），每种模板的字体、章节编号、摘要样式均按对应期刊 LaTeX 模板风格渲染，编辑器内随时切换。
 
 **结构化编辑** — 五个标签页覆盖论文全部结构：Meta（标题/作者/摘要/关键词/术语表）、Figures（拖拽上传 + 一键复制 LaTeX 代码）、Tables（三线表可视化编辑）、Sections（15 个 LaTeX 快捷工具按钮）、Back（CRediT/声明/致谢）。
 
