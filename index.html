@@ -317,23 +317,118 @@
   .sub-tpl-btn:hover { background: rgba(59,130,246,0.25); border-color: #3b82f6; }
   .landing-hint { margin-top: 20px; font-size: 11px; color: #64748b; }
 
-  /* ═══ Template Overrides: Wiley ═══ */
-  body.tpl-wiley .page { font-family: 'Helvetica Neue', 'Arial', sans-serif; font-size: 13.5px; line-height: 1.65; }
-  body.tpl-wiley .page .p-sec-title { font-size: 15px; font-weight: 700; margin: 20px 0 8px; color: #1a1a1a; }
-  body.tpl-wiley .page .p-sec-title-star { font-size: 14px; font-weight: 700; color: #1a1a1a; }
-  body.tpl-wiley .page .p-title { font-family: 'Helvetica Neue', 'Arial', sans-serif; font-size: 20px; }
-  body.tpl-wiley .page .p-abstract { font-size: 12px; line-height: 1.6; }
-  body.tpl-wiley .page .p-body { font-size: 13px; line-height: 1.7; }
-  body.tpl-wiley .page .p-kw { font-family: 'Helvetica Neue', 'Arial', sans-serif; }
+  /* ═══ Template: Elsevier (default — no overrides needed) ═══ */
+  body.tpl-elsevier .page .p-sec-title { /* numbered, bold, serif — already default */ }
 
-  /* ═══ Template Overrides: ACS ═══ */
-  body.tpl-acs .page { font-family: 'Times New Roman', 'Georgia', serif; font-size: 13px; line-height: 1.6; }
-  body.tpl-acs .page .p-sec-title { font-family: 'Arial', 'Helvetica Neue', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; margin: 18px 0 8px; }
-  body.tpl-acs .page .p-sec-title-star { font-family: 'Arial', 'Helvetica Neue', sans-serif; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
-  body.tpl-acs .page .p-title { font-family: 'Arial', 'Helvetica Neue', sans-serif; font-size: 19px; }
-  body.tpl-acs .page .p-abstract { font-size: 12px; line-height: 1.55; }
+  /* ═══ Template: Wiley ═══ */
+  body.tpl-wiley .page {
+    font-family: 'STIX Two Text', 'STIXGeneral', 'Times New Roman', serif;
+    font-size: 13.5px; line-height: 1.7; color: #1a1a1a;
+  }
+  body.tpl-wiley .page .p-title {
+    font-family: 'STIX Two Text', 'Times New Roman', serif;
+    font-size: 21px; font-weight: 700; line-height: 1.3; margin-bottom: 12px;
+  }
+  body.tpl-wiley .page .p-authors { font-size: 13px; }
+  body.tpl-wiley .page .p-sec-title {
+    font-size: 15px; font-weight: 700; margin: 22px 0 8px;
+    font-family: 'STIX Two Text', 'Times New Roman', serif;
+    color: #1a1a1a; border-bottom: none;
+  }
+  body.tpl-wiley .page .p-sec-title-star {
+    font-size: 14px; font-weight: 700;
+    font-family: 'STIX Two Text', 'Times New Roman', serif;
+  }
+  body.tpl-wiley .page .p-subsec-title {
+    font-size: 14px; font-weight: 700; font-style: italic; margin: 16px 0 6px;
+  }
+  body.tpl-wiley .page .p-abstract {
+    font-size: 12.5px; line-height: 1.65; margin: 8px 0 6px;
+    border-left: 3px solid #c7a94f; padding-left: 12px;
+  }
+  body.tpl-wiley .page .p-body { font-size: 13.5px; line-height: 1.7; }
+  body.tpl-wiley .page .p-kw {
+    font-size: 12px; color: #444; font-style: italic; margin-top: 4px;
+  }
+  /* Wiley-Angewandte: sans-serif headings (published style) */
+  body.tpl-wiley-angew .page {
+    font-family: 'STIX Two Text', 'Times New Roman', serif;
+    font-size: 13px; line-height: 1.65;
+  }
+  body.tpl-wiley-angew .page .p-sec-title {
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    font-size: 14px; font-weight: 700; margin: 20px 0 8px;
+  }
+  body.tpl-wiley-angew .page .p-sec-title-star {
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    font-size: 13px; font-weight: 700;
+  }
+  body.tpl-wiley-angew .page .p-title {
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    font-size: 20px; font-weight: 700; text-transform: none;
+  }
+  body.tpl-wiley-angew .page .p-subsec-title {
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    font-size: 13px; font-weight: 700; font-style: italic;
+  }
+  body.tpl-wiley-angew .page .p-abstract {
+    font-size: 12px; line-height: 1.6;
+    border-left: 3px solid #8b5e3c; padding-left: 12px;
+  }
+
+  /* ═══ Template: ACS ═══ */
+  body.tpl-acs .page {
+    font-family: 'Times New Roman', 'CMU Serif', 'Georgia', serif;
+    font-size: 13px; line-height: 1.6; color: #1a1a1a;
+  }
+  body.tpl-acs .page .p-title {
+    font-family: 'Times New Roman', serif;
+    font-size: 19px; font-weight: 700; line-height: 1.3; margin-bottom: 10px;
+  }
+  body.tpl-acs .page .p-authors { font-size: 12.5px; }
+  body.tpl-acs .page .p-sec-title {
+    font-family: 'Times New Roman', serif;
+    font-size: 14px; font-weight: 700; margin: 20px 0 8px;
+    text-transform: none; letter-spacing: normal;
+  }
+  body.tpl-acs .page .p-sec-title-star {
+    font-family: 'Times New Roman', serif;
+    font-size: 13px; font-weight: 700;
+    text-transform: none; letter-spacing: normal;
+  }
+  body.tpl-acs .page .p-subsec-title {
+    font-size: 13px; font-weight: 700; font-style: italic; margin: 14px 0 6px;
+  }
+  body.tpl-acs .page .p-abstract {
+    font-size: 12px; line-height: 1.55; margin: 6px 0 8px;
+    padding: 8px 12px; background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 2px;
+  }
   body.tpl-acs .page .p-body { font-size: 13px; line-height: 1.6; }
-  body.tpl-acs .page .p-kw { font-family: 'Arial', sans-serif; font-size: 11px; }
+  body.tpl-acs .page .p-kw {
+    font-family: 'Times New Roman', serif;
+    font-size: 11.5px; color: #555; margin-top: 4px;
+  }
+  /* ACS-JACS: slightly more authoritative heading weight */
+  body.tpl-acs-jacs .page .p-sec-title {
+    font-size: 14px; font-weight: 700;
+  }
+  /* ACS-Nano: modern, slightly larger headings */
+  body.tpl-acs-nano .page .p-sec-title {
+    font-size: 14.5px; font-weight: 700; color: #111;
+  }
+  body.tpl-acs-nano .page .p-title {
+    font-size: 20px;
+  }
+  /* ACS-Energy-Letters: compact */
+  body.tpl-acs-energylett .page {
+    font-size: 12.5px; line-height: 1.55;
+  }
+  body.tpl-acs-energylett .page .p-sec-title {
+    font-size: 13.5px; margin: 16px 0 6px;
+  }
+  body.tpl-acs-energylett .page .p-body {
+    font-size: 12.5px; line-height: 1.55;
+  }
 
   /* Switch template button in sidebar */
   .btn-switch-tpl {
@@ -589,68 +684,80 @@ const DEFAULT_DATA = {
 // ═══ Template Definitions ═══
 const TEMPLATE_KEY = "selected_template";
 const TEMPLATES = {
-  // ── Elsevier ──
+  // ── Elsevier ── (numbered sections, [N] citations, serif throughout)
   'elsevier-base': {
     publisher: 'elsevier', name: 'elsarticle [review]',
     badge: 'elsarticle [review]', cssClass: 'tpl-elsevier',
     sidebarTitle: 'Elsevier — Live Editor',
+    numberedSections: true,
   },
   'elsevier-solenergy': {
     publisher: 'elsevier', name: 'Solar Energy',
     badge: 'Solar Energy', cssClass: 'tpl-elsevier',
     sidebarTitle: 'Solar Energy — Live Editor',
+    numberedSections: true,
   },
   'elsevier-jpowsour': {
     publisher: 'elsevier', name: 'Journal of Power Sources',
     badge: 'J. Power Sources', cssClass: 'tpl-elsevier',
     sidebarTitle: 'J. Power Sources — Live Editor',
+    numberedSections: true,
   },
   'elsevier-apenergy': {
     publisher: 'elsevier', name: 'Applied Energy',
     badge: 'Applied Energy', cssClass: 'tpl-elsevier',
     sidebarTitle: 'Applied Energy — Live Editor',
+    numberedSections: true,
   },
-  // ── Wiley ──
+  // ── Wiley ── (numbered sections, [N] citations, STIX serif)
   'wiley-base': {
     publisher: 'wiley', name: 'Wiley Standard',
     badge: 'Wiley', cssClass: 'tpl-wiley',
     sidebarTitle: 'Wiley — Live Editor',
+    numberedSections: true,
   },
   'wiley-advmater': {
     publisher: 'wiley', name: 'Advanced Materials',
     badge: 'Adv. Mater.', cssClass: 'tpl-wiley',
     sidebarTitle: 'Adv. Mater. — Live Editor',
+    numberedSections: true,
   },
   'wiley-angchem': {
     publisher: 'wiley', name: 'Angewandte Chemie',
-    badge: 'Angew. Chem.', cssClass: 'tpl-wiley',
+    badge: 'Angew. Chem.', cssClass: 'tpl-wiley tpl-wiley-angew',
     sidebarTitle: 'Angew. Chem. — Live Editor',
+    numberedSections: true,
   },
   'wiley-advenmater': {
     publisher: 'wiley', name: 'Advanced Energy Materials',
     badge: 'Adv. Energy Mater.', cssClass: 'tpl-wiley',
     sidebarTitle: 'Adv. Energy Mater. — Live Editor',
+    numberedSections: true,
   },
-  // ── ACS ──
+  // ── ACS ── (unnumbered sections, superscript citations, serif body)
   'acs-base': {
     publisher: 'acs', name: 'ACS Standard',
     badge: 'ACS', cssClass: 'tpl-acs',
     sidebarTitle: 'ACS — Live Editor',
+    numberedSections: false,
   },
   'acs-jacs': {
     publisher: 'acs', name: 'JACS',
-    badge: 'J. Am. Chem. Soc.', cssClass: 'tpl-acs',
+    badge: 'J. Am. Chem. Soc.', cssClass: 'tpl-acs tpl-acs-jacs',
     sidebarTitle: 'JACS — Live Editor',
+    numberedSections: false,
   },
   'acs-acsnano': {
     publisher: 'acs', name: 'ACS Nano',
-    badge: 'ACS Nano', cssClass: 'tpl-acs',
+    badge: 'ACS Nano', cssClass: 'tpl-acs tpl-acs-nano',
     sidebarTitle: 'ACS Nano — Live Editor',
+    numberedSections: false,
   },
   'acs-acsenergylett': {
     publisher: 'acs', name: 'ACS Energy Letters',
-    badge: 'ACS Energy Lett.', cssClass: 'tpl-acs',
+    badge: 'ACS Energy Lett.', cssClass: 'tpl-acs tpl-acs-energylett',
     sidebarTitle: 'ACS Energy Lett. — Live Editor',
+    numberedSections: false,
   },
 };
 
@@ -944,8 +1051,15 @@ function generateBlocks(d) {
   }
 
   // Sections — each block tagged with section-id + paragraph index for scroll sync
+  var tpl = getCurrentTpl();
+  var stripNumbers = tpl && tpl.numberedSections === false;
   d.sections.forEach(sec => {
-    blocks.push({ html: '<div class="p-sec-title" data-sec-id="'+escA(sec.id)+'">'+esc(sec.title)+'</div>', keep: true });
+    var displayTitle = sec.title;
+    if (stripNumbers) {
+      // Remove leading number like "1. ", "2. ", "3.1 " etc.
+      displayTitle = displayTitle.replace(/^\d+(\.\d+)*\.?\s*/, '');
+    }
+    blocks.push({ html: '<div class="p-sec-title" data-sec-id="'+escA(sec.id)+'">'+esc(displayTitle)+'</div>', keep: true });
     var units = htmlToOrderedUnits(textToHtml(sec.content));
     units.forEach(function(unit, pidx) {
       blocks.push({ html: '<div class="p-body" data-sec-id="'+escA(sec.id)+'" data-pidx="'+pidx+'">'+unit+'</div>', keep: false });
@@ -2232,12 +2346,17 @@ function refreshAll() {
 //  TEMPLATE SELECTION & INIT
 // ═══════════════════════════════════════════════════
 
+var _currentTplId = null;
+function getCurrentTpl() { return _currentTplId ? TEMPLATES[_currentTplId] : null; }
+
 function applyTemplate(tplId) {
   var tpl = TEMPLATES[tplId];
   if (!tpl) return;
-  // Remove all template classes and add the new one
-  document.body.classList.remove('tpl-elsevier', 'tpl-wiley', 'tpl-acs');
-  document.body.classList.add(tpl.cssClass);
+  _currentTplId = tplId;
+  // Remove ALL template classes and add the new ones
+  var allTplClasses = ['tpl-elsevier','tpl-wiley','tpl-wiley-angew','tpl-acs','tpl-acs-jacs','tpl-acs-nano','tpl-acs-energylett'];
+  allTplClasses.forEach(function(c) { document.body.classList.remove(c); });
+  tpl.cssClass.split(' ').forEach(function(c) { if(c) document.body.classList.add(c); });
   // Update sidebar header
   var titleEl = document.getElementById('sidebar-title');
   var badgeEl = document.getElementById('sidebar-badge');
