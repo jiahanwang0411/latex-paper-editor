@@ -294,28 +294,30 @@
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; color: #e2e8f0;
   }
   #template-landing.hidden { display: none; }
-  .landing-title { font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
-  .landing-subtitle { font-size: 14px; color: #94a3b8; margin-bottom: 36px; }
-  .publisher-grid { display: flex; gap: 24px; margin-bottom: 24px; }
+  .landing-title { font-size: 36px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.5px; }
+  .landing-subtitle { font-size: 17px; color: #94a3b8; margin-bottom: 48px; }
+  .publisher-grid { display: flex; gap: 32px; margin-bottom: 32px; }
   .publisher-card {
-    width: 220px; padding: 28px 24px; border-radius: 16px;
+    width: 260px; padding: 36px 28px; border-radius: 18px;
     background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.1);
     cursor: pointer; transition: all .25s ease; text-align: center;
   }
   .publisher-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); transform: translateY(-4px); }
   .publisher-card.active { border-color: #3b82f6; background: rgba(59,130,246,0.15); }
-  .pub-icon { font-size: 36px; margin-bottom: 12px; display: block; }
-  .pub-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
-  .pub-desc { font-size: 11px; color: #94a3b8; line-height: 1.5; }
-  .sub-templates { display: none; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 720px; }
+  .pub-logo { width: 80px; height: 40px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; }
+  .pub-logo svg { max-width: 100%; max-height: 100%; }
+  .pub-name { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+  .pub-desc { font-size: 14px; color: #94a3b8; line-height: 1.6; }
+  .sub-templates { display: none; flex-wrap: wrap; gap: 14px; justify-content: center; max-width: 800px; }
   .sub-templates.visible { display: flex; }
   .sub-tpl-btn {
-    padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 500;
+    padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: 500;
     background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
     color: #e2e8f0; cursor: pointer; transition: all .2s ease;
   }
   .sub-tpl-btn:hover { background: rgba(59,130,246,0.25); border-color: #3b82f6; }
-  .landing-hint { margin-top: 20px; font-size: 11px; color: #64748b; }
+  .landing-coming { margin-top: 28px; font-size: 14px; color: #64748b; font-style: italic; }
+  .landing-hint { margin-top: 12px; font-size: 13px; color: #475569; }
 
   /* ═══ Template: Elsevier (default — no overrides needed) ═══ */
   body.tpl-elsevier .page .p-sec-title { /* numbered, bold, serif — already default */ }
@@ -447,17 +449,32 @@
   <div class="landing-subtitle">Select a journal template to get started</div>
   <div class="publisher-grid">
     <div class="publisher-card" data-pub="elsevier">
-      <span class="pub-icon">E</span>
+      <div class="pub-logo">
+        <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+          <text x="60" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#ff6a00">ELSEVIER</text>
+          <rect x="10" y="33" width="100" height="2" rx="1" fill="#ff6a00"/>
+        </svg>
+      </div>
       <div class="pub-name">Elsevier</div>
       <div class="pub-desc">elsarticle document class<br>Single-column review format</div>
     </div>
     <div class="publisher-card" data-pub="wiley">
-      <span class="pub-icon">W</span>
+      <div class="pub-logo">
+        <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+          <text x="60" y="26" text-anchor="middle" font-family="Georgia,serif" font-size="16" font-weight="400" fill="#0068a7" letter-spacing="3">WILEY</text>
+          <line x1="15" y1="32" x2="105" y2="32" stroke="#0068a7" stroke-width="1.5"/>
+        </svg>
+      </div>
       <div class="pub-name">Wiley</div>
-      <div class="pub-desc">Sans-serif headings<br>Modern journal layout</div>
+      <div class="pub-desc">STIX serif typography<br>Modern journal layout</div>
     </div>
     <div class="publisher-card" data-pub="acs">
-      <span class="pub-icon">A</span>
+      <div class="pub-logo">
+        <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,2 78,12 78,32 60,42 42,32 42,12" fill="none" stroke="#00598a" stroke-width="2" transform="translate(0,-2) scale(0.9)" />
+          <text x="55" y="26" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#00598a">ACS</text>
+        </svg>
+      </div>
       <div class="pub-name">ACS</div>
       <div class="pub-desc">American Chemical Society<br>Structured section format</div>
     </div>
@@ -465,6 +482,7 @@
   <div class="sub-templates" id="sub-tpl-elsevier"></div>
   <div class="sub-templates" id="sub-tpl-wiley"></div>
   <div class="sub-templates" id="sub-tpl-acs"></div>
+  <div class="landing-coming">More journal templates coming soon</div>
   <div class="landing-hint">Your selection will be saved locally. You can switch templates anytime from the editor.</div>
 </div>
 
