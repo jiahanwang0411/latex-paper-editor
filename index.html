@@ -285,16 +285,101 @@
   .syntax-table td { padding: 3px 0; border-bottom: 1px solid #f1f5f9; }
   .syntax-table td:first-child { font-family: monospace; color: #2563eb; white-space: nowrap; padding-right: 8px; }
   .syntax-table td:last-child { color: #64748b; }
+
+  /* ═══ Template Landing Page ═══ */
+  #template-landing {
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; color: #e2e8f0;
+  }
+  #template-landing.hidden { display: none; }
+  .landing-title { font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .landing-subtitle { font-size: 14px; color: #94a3b8; margin-bottom: 36px; }
+  .publisher-grid { display: flex; gap: 24px; margin-bottom: 24px; }
+  .publisher-card {
+    width: 220px; padding: 28px 24px; border-radius: 16px;
+    background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.1);
+    cursor: pointer; transition: all .25s ease; text-align: center;
+  }
+  .publisher-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); transform: translateY(-4px); }
+  .publisher-card.active { border-color: #3b82f6; background: rgba(59,130,246,0.15); }
+  .pub-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+  .pub-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .pub-desc { font-size: 11px; color: #94a3b8; line-height: 1.5; }
+  .sub-templates { display: none; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 720px; }
+  .sub-templates.visible { display: flex; }
+  .sub-tpl-btn {
+    padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 500;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: #e2e8f0; cursor: pointer; transition: all .2s ease;
+  }
+  .sub-tpl-btn:hover { background: rgba(59,130,246,0.25); border-color: #3b82f6; }
+  .landing-hint { margin-top: 20px; font-size: 11px; color: #64748b; }
+
+  /* ═══ Template Overrides: Wiley ═══ */
+  body.tpl-wiley .page { font-family: 'Helvetica Neue', 'Arial', sans-serif; font-size: 13.5px; line-height: 1.65; }
+  body.tpl-wiley .page .p-sec-title { font-size: 15px; font-weight: 700; margin: 20px 0 8px; color: #1a1a1a; }
+  body.tpl-wiley .page .p-sec-title-star { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+  body.tpl-wiley .page .p-title { font-family: 'Helvetica Neue', 'Arial', sans-serif; font-size: 20px; }
+  body.tpl-wiley .page .p-abstract { font-size: 12px; line-height: 1.6; }
+  body.tpl-wiley .page .p-body { font-size: 13px; line-height: 1.7; }
+  body.tpl-wiley .page .p-kw { font-family: 'Helvetica Neue', 'Arial', sans-serif; }
+
+  /* ═══ Template Overrides: ACS ═══ */
+  body.tpl-acs .page { font-family: 'Times New Roman', 'Georgia', serif; font-size: 13px; line-height: 1.6; }
+  body.tpl-acs .page .p-sec-title { font-family: 'Arial', 'Helvetica Neue', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; margin: 18px 0 8px; }
+  body.tpl-acs .page .p-sec-title-star { font-family: 'Arial', 'Helvetica Neue', sans-serif; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+  body.tpl-acs .page .p-title { font-family: 'Arial', 'Helvetica Neue', sans-serif; font-size: 19px; }
+  body.tpl-acs .page .p-abstract { font-size: 12px; line-height: 1.55; }
+  body.tpl-acs .page .p-body { font-size: 13px; line-height: 1.6; }
+  body.tpl-acs .page .p-kw { font-family: 'Arial', sans-serif; font-size: 11px; }
+
+  /* Switch template button in sidebar */
+  .btn-switch-tpl {
+    font-size: 10px; padding: 2px 8px; border-radius: 4px;
+    background: #f1f5f9; border: 1px solid #cbd5e1; color: #64748b;
+    cursor: pointer; transition: all .15s; margin-left: 8px;
+  }
+  .btn-switch-tpl:hover { background: #e2e8f0; color: #334155; }
 </style>
 </head>
 <body>
+
+<!-- Template Selection Landing -->
+<div id="template-landing">
+  <div class="landing-title">LaTeX Paper Live Editor</div>
+  <div class="landing-subtitle">Select a journal template to get started</div>
+  <div class="publisher-grid">
+    <div class="publisher-card" data-pub="elsevier">
+      <span class="pub-icon">E</span>
+      <div class="pub-name">Elsevier</div>
+      <div class="pub-desc">elsarticle document class<br>Single-column review format</div>
+    </div>
+    <div class="publisher-card" data-pub="wiley">
+      <span class="pub-icon">W</span>
+      <div class="pub-name">Wiley</div>
+      <div class="pub-desc">Sans-serif headings<br>Modern journal layout</div>
+    </div>
+    <div class="publisher-card" data-pub="acs">
+      <span class="pub-icon">A</span>
+      <div class="pub-name">ACS</div>
+      <div class="pub-desc">American Chemical Society<br>Structured section format</div>
+    </div>
+  </div>
+  <div class="sub-templates" id="sub-tpl-elsevier"></div>
+  <div class="sub-templates" id="sub-tpl-wiley"></div>
+  <div class="sub-templates" id="sub-tpl-acs"></div>
+  <div class="landing-hint">Your selection will be saved locally. You can switch templates anytime from the editor.</div>
+</div>
 
 <div class="root">
   <div class="sidebar">
     <div class="sidebar-header">
       <div class="top">
-        <span class="title">Solar Energy — Live Editor</span>
-        <span class="badge">elsarticle [review]</span>
+        <span class="title" id="sidebar-title">Solar Energy — Live Editor</span>
+        <span class="badge" id="sidebar-badge">elsarticle [review]</span>
+        <button class="btn-switch-tpl" id="btn-switch-tpl" title="Switch template">Switch</button>
       </div>
       <div class="save-indicator">
         <span class="save-dot" id="save-dot"></span>
@@ -499,6 +584,74 @@ const DEFAULT_DATA = {
   acknowledgements: "This work was supported by [Funding Agency] under Grant No. [XXXX].",
   figures: [],
   tables: [],
+};
+
+// ═══ Template Definitions ═══
+const TEMPLATE_KEY = "selected_template";
+const TEMPLATES = {
+  // ── Elsevier ──
+  'elsevier-base': {
+    publisher: 'elsevier', name: 'elsarticle [review]',
+    badge: 'elsarticle [review]', cssClass: 'tpl-elsevier',
+    sidebarTitle: 'Elsevier — Live Editor',
+  },
+  'elsevier-solenergy': {
+    publisher: 'elsevier', name: 'Solar Energy',
+    badge: 'Solar Energy', cssClass: 'tpl-elsevier',
+    sidebarTitle: 'Solar Energy — Live Editor',
+  },
+  'elsevier-jpowsour': {
+    publisher: 'elsevier', name: 'Journal of Power Sources',
+    badge: 'J. Power Sources', cssClass: 'tpl-elsevier',
+    sidebarTitle: 'J. Power Sources — Live Editor',
+  },
+  'elsevier-apenergy': {
+    publisher: 'elsevier', name: 'Applied Energy',
+    badge: 'Applied Energy', cssClass: 'tpl-elsevier',
+    sidebarTitle: 'Applied Energy — Live Editor',
+  },
+  // ── Wiley ──
+  'wiley-base': {
+    publisher: 'wiley', name: 'Wiley Standard',
+    badge: 'Wiley', cssClass: 'tpl-wiley',
+    sidebarTitle: 'Wiley — Live Editor',
+  },
+  'wiley-advmater': {
+    publisher: 'wiley', name: 'Advanced Materials',
+    badge: 'Adv. Mater.', cssClass: 'tpl-wiley',
+    sidebarTitle: 'Adv. Mater. — Live Editor',
+  },
+  'wiley-angchem': {
+    publisher: 'wiley', name: 'Angewandte Chemie',
+    badge: 'Angew. Chem.', cssClass: 'tpl-wiley',
+    sidebarTitle: 'Angew. Chem. — Live Editor',
+  },
+  'wiley-advenmater': {
+    publisher: 'wiley', name: 'Advanced Energy Materials',
+    badge: 'Adv. Energy Mater.', cssClass: 'tpl-wiley',
+    sidebarTitle: 'Adv. Energy Mater. — Live Editor',
+  },
+  // ── ACS ──
+  'acs-base': {
+    publisher: 'acs', name: 'ACS Standard',
+    badge: 'ACS', cssClass: 'tpl-acs',
+    sidebarTitle: 'ACS — Live Editor',
+  },
+  'acs-jacs': {
+    publisher: 'acs', name: 'JACS',
+    badge: 'J. Am. Chem. Soc.', cssClass: 'tpl-acs',
+    sidebarTitle: 'JACS — Live Editor',
+  },
+  'acs-acsnano': {
+    publisher: 'acs', name: 'ACS Nano',
+    badge: 'ACS Nano', cssClass: 'tpl-acs',
+    sidebarTitle: 'ACS Nano — Live Editor',
+  },
+  'acs-acsenergylett': {
+    publisher: 'acs', name: 'ACS Energy Letters',
+    badge: 'ACS Energy Lett.', cssClass: 'tpl-acs',
+    sidebarTitle: 'ACS Energy Lett. — Live Editor',
+  },
 };
 
 const STORAGE_KEY = "solar_energy_paper_v5";
@@ -2076,17 +2229,95 @@ function refreshAll() {
 }
 
 // ═══════════════════════════════════════════════════
-//  INIT
+//  TEMPLATE SELECTION & INIT
 // ═══════════════════════════════════════════════════
-bindMeta();
-bindBack();
-renderHighlights();
-renderFigList();
-renderTblList();
-renderSecList();
-showSecEditor();
-updateAbsCount();
-renderPreview();
+
+function applyTemplate(tplId) {
+  var tpl = TEMPLATES[tplId];
+  if (!tpl) return;
+  // Remove all template classes and add the new one
+  document.body.classList.remove('tpl-elsevier', 'tpl-wiley', 'tpl-acs');
+  document.body.classList.add(tpl.cssClass);
+  // Update sidebar header
+  var titleEl = document.getElementById('sidebar-title');
+  var badgeEl = document.getElementById('sidebar-badge');
+  if (titleEl) titleEl.textContent = tpl.sidebarTitle;
+  if (badgeEl) badgeEl.textContent = tpl.badge;
+  // Update page title
+  document.title = tpl.sidebarTitle;
+  // Save selection
+  localStorage.setItem(TEMPLATE_KEY, tplId);
+}
+
+var _editorInitialized = false;
+function initEditor() {
+  if (_editorInitialized) { renderPreview(); return; }
+  _editorInitialized = true;
+  document.querySelector('.root').style.visibility = 'visible';
+  bindMeta();
+  bindBack();
+  renderHighlights();
+  renderFigList();
+  renderTblList();
+  renderSecList();
+  showSecEditor();
+  updateAbsCount();
+  renderPreview();
+}
+
+function showLanding() {
+  var landing = document.getElementById('template-landing');
+  landing.classList.remove('hidden');
+
+  // Populate sub-template buttons
+  var pubs = ['elsevier', 'wiley', 'acs'];
+  pubs.forEach(function(pub) {
+    var container = document.getElementById('sub-tpl-' + pub);
+    container.innerHTML = '';
+    Object.keys(TEMPLATES).forEach(function(tplId) {
+      if (TEMPLATES[tplId].publisher !== pub) return;
+      var btn = document.createElement('button');
+      btn.className = 'sub-tpl-btn';
+      btn.textContent = TEMPLATES[tplId].name;
+      btn.onclick = function() {
+        applyTemplate(tplId);
+        landing.classList.add('hidden');
+        initEditor();
+      };
+      container.appendChild(btn);
+    });
+  });
+
+  // Publisher card click → show sub-templates
+  document.querySelectorAll('.publisher-card').forEach(function(card) {
+    card.onclick = function() {
+      document.querySelectorAll('.publisher-card').forEach(function(c) { c.classList.remove('active'); });
+      card.classList.add('active');
+      var pub = card.getAttribute('data-pub');
+      document.querySelectorAll('.sub-templates').forEach(function(s) { s.classList.remove('visible'); });
+      document.getElementById('sub-tpl-' + pub).classList.add('visible');
+    };
+  });
+}
+
+// Switch Template button
+document.getElementById('btn-switch-tpl').onclick = function() {
+  if (confirm('Switch template? Your current content will be kept, only the styling will change.')) {
+    showLanding();
+  }
+};
+
+// Boot
+var savedTpl = localStorage.getItem(TEMPLATE_KEY);
+if (savedTpl && TEMPLATES[savedTpl]) {
+  applyTemplate(savedTpl);
+  document.getElementById('template-landing').classList.add('hidden');
+  initEditor();
+} else {
+  // First visit: show landing, hide editor until template is chosen
+  document.querySelector('.root').style.visibility = 'hidden';
+  showLanding();
+}
 </script>
 </body>
 </html>
