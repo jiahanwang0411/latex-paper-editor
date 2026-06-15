@@ -11,11 +11,11 @@
 
 首次打开时进入模板选择界面，点击出版商卡片后选择具体期刊即可开始写作。编辑器内置了三大出版商系列共 12 种模板，每种模板的字体、章节编号、摘要样式、行间距等均按照对应期刊的真实 LaTeX 模板风格渲染：
 
-| 出版商 | 可选模板 | 风格特征 |
-|--------|---------|---------|
-| **Elsevier** | elsarticle [review]、Solar Energy、Journal of Power Sources、Applied Energy | Times New Roman 衬线体，编号章节标题，1.75 行高 |
-| **Wiley** | Wiley Standard、Advanced Materials、Angewandte Chemie、Advanced Energy Materials | STIX 衬线体正文，Angewandte 独有 Helvetica 无衬线标题 |
-| **ACS** | ACS Standard、JACS、ACS Nano、ACS Energy Letters | 不编号章节标题，紧凑排版，ACS Energy Letters 最小字号 |
+| 出版商 | 可选模板 |
+|--------|---------|
+| **Elsevier** | elsarticle [review]、Solar Energy、Journal of Power Sources、Applied Energy |
+| **Wiley** | Wiley Standard、Advanced Materials、Angewandte Chemie、Advanced Energy Materials |
+| **ACS** | ACS Standard、JACS、ACS Nano、ACS Energy Letters |
 
 在编辑器中随时点击右上角 **Switch** 按钮切换模板——只改变预览样式，不影响已写好的内容。这意味着你可以用同一份稿件快速预览不同期刊的排版效果，方便选刊投稿。
 
@@ -94,17 +94,17 @@ npx serve .
 5. 随时切换不同期刊模板预览最终排版效果
 6. 使用 **Export** 备份数据，或将 LaTeX 代码复制到 Overleaf 等平台进行最终排版
 
-## 与 AI Agent 联动使用
+## 与 AI 编程工具协同工作
 
-本项目采用纯 HTML 单文件格式，这一设计使其天然适合与 AI Agent（如 ChatGPT、Claude、Copilot 等）协同工作：
+本项目采用纯 HTML 单文件格式，这一设计使其天然适合与 AI 编程工具（如 **Codex、Claude Code、Kimi Work、QoderWork** 等）协同工作：
 
 ### 单文件即完整应用
 
-整个编辑器是一个自包含的 HTML 文件（约 2100 行），所有 CSS 样式、JavaScript 逻辑、页面结构均内联其中。AI Agent 只需读取和修改这一个文件即可完成任何功能迭代，无需理解项目目录结构、构建工具或依赖关系。
+整个编辑器是一个自包含的 HTML 文件（约 2100 行），所有 CSS 样式、JavaScript 逻辑、页面结构均内联其中。AI 工具只需读取和修改这一个文件即可完成任何功能迭代，无需理解项目目录结构、构建工具或依赖关系。
 
 ### 零构建直接运行
 
-与 React/Vue 等前端框架不同，本项目不需要 `npm install`、`webpack`、`vite` 等任何构建步骤。AI Agent 修改代码后，刷新浏览器即可看到效果。这消除了 AI 在复杂构建链上浪费 token 和出错的可能性。
+与 React/Vue 等前端框架不同，本项目不需要 `npm install`、`webpack`、`vite` 等任何构建步骤。AI 工具修改代码后，刷新浏览器即可看到效果。这消除了 AI 在复杂构建链上浪费 token 和出错的可能性。
 
 ### 易于 AI 理解和修改
 
@@ -115,6 +115,7 @@ npx serve .
 
 ### 典型联动场景
 
+- **AI 生成初稿一键导入**：用 Codex、Claude Code 等 AI 工具生成的论文初稿（JSON 格式），可通过 **Import** 功能一键导入编辑器，自动按照所选期刊格式渲染排版，用户直接在编辑器中修改润色，实现"AI 写初稿 → 编辑器排版 → 人工精修"的高效工作流
 - **让 AI 添加新期刊模板**：告诉 AI "请添加 Nature 期刊模板"，它只需在 `TEMPLATES` 中加一条配置、在 CSS 中加几行样式覆盖
 - **让 AI 调整排版细节**：如"把摘要字号改大一点"、"给 ACS 模板加上行号"
 - **让 AI 修复渲染问题**：如"公式编号在第二页没有重置"，AI 可直接定位 `processEquations` 函数修复
@@ -147,6 +148,12 @@ npx serve .
 - 数据持久化使用浏览器 localStorage
 - 分页算法通过离屏测量 + 二分查找实现精确断页
 - 模板切换通过 `body.tpl-*` CSS 类名 + `TEMPLATES` 配置对象实现
+
+## 觉得有用？
+
+如果这个工具帮到了你的论文写作，请给这个项目点个 Star ⭐ — 这是对我最大的鼓励，也能让更多研究者发现这个工具。
+
+[![Star this repo](https://img.shields.io/github/stars/jiahanwang0411/latex-paper-editor?style=social)](https://github.com/jiahanwang0411/latex-paper-editor)
 
 ## 许可
 
