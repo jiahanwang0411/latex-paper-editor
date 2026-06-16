@@ -104,6 +104,18 @@ npx serve .                  # 然后访问 http://localhost:3000
 
 欢迎提 Issue 反馈问题或提交 PR。
 
+## 支持本项目
+
+如果这个项目帮助到了你，欢迎给个 **Star** ⭐ 支持一下！
+
+也可以通过支付宝请作者喝杯咖啡 ☕
+
+<p align="center">
+  <img src="assets/tips-alipay.jpg" alt="支付宝赞赏码" width="280">
+</p>
+
+<p align="center"><em>感谢每一位支持者的鼓励 🙏</em></p>
+
 ## License
 
 MIT License
