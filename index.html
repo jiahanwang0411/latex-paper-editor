@@ -449,11 +449,12 @@
     .sidebar, #template-landing, .page-info-bar, .btn-switch-tpl { display: none !important; }
     .root { display: block !important; height: auto !important; overflow: visible !important; }
     .preview-area { overflow: visible !important; height: auto !important; width: auto !important; padding: 0 !important; background: white !important; }
-    #page-wrapper { padding: 0 !important; }
-    /* Render each page as a clean A4 sheet */
+    #page-wrapper { padding: 0 !important; gap: 0 !important; display: block !important; }
+    /* Render each page as a clean A4 sheet — padding calibrated so content area
+       matches screen (604×898px): 210-25.1*2=159.8mm≈604px, 297-29.7*2=237.6mm≈898px */
     .page {
       width: 210mm !important; min-height: 297mm !important; height: 297mm !important;
-      padding: 20mm 18mm 20mm 18mm !important;
+      padding: 29.7mm 25.1mm !important;
       margin: 0 !important; box-shadow: none !important;
       background: white !important; border: none !important;
       page-break-after: always; page-break-inside: avoid;
@@ -461,7 +462,7 @@
     }
     .page:last-child { page-break-after: auto; }
     .page-content { height: auto !important; overflow: visible !important; }
-    .page-overflow { height: auto !important; min-height: 297mm !important; }
+    .page-overflow { height: auto !important; }
     .page-num { position: absolute; bottom: 10mm; left: 0; right: 0; text-align: center; font-size: 10px; color: #666; }
     /* Remove overflow clip indicators */
     .page-overflow::after { display: none !important; }
