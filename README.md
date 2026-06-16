@@ -8,11 +8,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jiahanwang0411/latex-paper-editor/blob/main/assets/demo-full.mp4">
-    <img src="assets/demo-hero.jpg" alt="Watch full demo video" width="720">
+  <a href="https://www.bilibili.com/video/BV1MTju67EKT">
+    <img src="assets/demo-hero.jpg" alt="Watch full demo video on Bilibili" width="720">
   </a>
   <br>
-  <em>📹 点击观看完整项目介绍视频</em>
+  <em>📹 点击观看完整项目介绍视频（B站）</em>
 </p>
 
 **AI + 实时排版，从初稿到可投稿 PDF 的一站式论文编辑器。**
